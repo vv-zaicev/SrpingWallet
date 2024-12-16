@@ -9,7 +9,7 @@ public class Transaction {
     private String description;
     private BigDecimal sum;
     private TransactionType type;
-    private Calendar calendar;
+    private Calendar date;
     private int id;
     private Wallet wallet;
     private TransactionCategory category;
@@ -41,12 +41,12 @@ public class Transaction {
 		this.type = type;
 	}
 
-	public Calendar getCalendar() {
-		return calendar;
+	public Calendar getDate() {
+		return date;
 	}
 
-	public void setCalendar(Calendar calendar) {
-		this.calendar = calendar;
+	public void setDate(Calendar date) {
+		this.date = date;
 	}
 
 	public int getId() {
