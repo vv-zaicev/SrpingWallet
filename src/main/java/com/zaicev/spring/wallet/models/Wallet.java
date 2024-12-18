@@ -7,48 +7,55 @@ import com.zaicev.spring.transactions.models.Transaction;
 
 public class Wallet {
 	private List<Transaction> transactions;
-    private BigDecimal balance;
-    private BigDecimal income;
-    private BigDecimal expenses;
-    private String name;
-    private int id;
-    
+	private BigDecimal balance;
+	private String name;
+	private int id;
 
-    
+	public Wallet() {
+	}
+
+	public Wallet(BigDecimal balance, String name, int id) {
+		super();
+		this.balance = balance;
+		this.name = name;
+		this.id = id;
+	}
+
 	public BigDecimal getBalance() {
 		return balance;
 	}
+
 	public void setBalance(BigDecimal balance) {
 		this.balance = balance;
 	}
+
 	public BigDecimal getIncome() {
-		return income;
+		return null;
 	}
-	public void setIncome(BigDecimal income) {
-		this.income = income;
-	}
+
 	public BigDecimal getExpenses() {
-		return expenses;
+		return null;
 	}
-	public void setExpenses(BigDecimal expenses) {
-		this.expenses = expenses;
-	}
+
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public List<Transaction> getTransactions() {
 		return transactions;
 	}
-    
-    
-	
+
 }
