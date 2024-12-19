@@ -15,14 +15,18 @@ import org.springframework.stereotype.Component;
 import com.zaicev.spring.transactions.models.Transaction;
 import com.zaicev.spring.transactions.models.TransactionCategory;
 import com.zaicev.spring.transactions.models.TransactionType;
+import com.zaicev.spring.wallet.dao.WalletDAO;
 
 @Component
 public class TransactionDAO {
 
 	private final JdbcTemplate jdbcTemplate;
 	private SimpleJdbcInsert insertIntoUser;
-	private final String SQL_SELECT_TRANSACTIONS = "SELECT * FROM transactions LEFT JOIN transaction_category ON transaction_category = category_id";
-	private final String SQL_SELECT_TRANSACTION_BY_ID = "SELECT * FROM transactions LEFT JOIN transaction_category ON transaction_category = category_id WHERE transaction_id=?";
+	private WalletDAO walletDAO;
+	private TransactionCategoryDAO transactionCategoryDAO;
+	
+	private final String SQL_SELECT_TRANSACTIONS = "SELECT * FROM transactions";
+	private final String SQL_SELECT_TRANSACTION_BY_ID = "SELECT * FROM transactions WHERE transaction_id=?";
 	private final String SQL_UPDATE_TRANSACTION = "UPDATE transactions SET transaction_description=?, transaction_type=?, transaction_date=?, transaction_sum=?, transaction_category=?, transaction_wallet=? WHERE transaction_id=?";
 	private final String SQL_DELETE_TRANSACTION = "DELETE FROM transactions WHERE transaction_id=?";
 	
@@ -37,15 +41,17 @@ public class TransactionDAO {
 		transaction.setDate(calendar);
 		transaction.setDescription(rs.getString("transaction_description"));
 		
-		TransactionCategory category = new TransactionCategory(rs.getString("category_name"), rs.getInt("category_id"));
-		transaction.setCategory(category);
+		transaction.setCategory(transactionCategoryDAO.getCategoryById(rs.getInt("transaction_category")));
+		transaction.setWallet(walletDAO.getWalletById(rs.getInt("transaction_wallet")));
 		
 		return transaction;
 	};
 
 	@Autowired
-	public TransactionDAO(JdbcTemplate jdbcTemplate) {
+	public TransactionDAO(JdbcTemplate jdbcTemplate, WalletDAO walletDAO, TransactionCategoryDAO transactionCategoryDAO) {
 		this.jdbcTemplate = jdbcTemplate;
+		this.walletDAO = walletDAO;
+		this.transactionCategoryDAO = transactionCategoryDAO;
 		this.insertIntoUser = new SimpleJdbcInsert(jdbcTemplate).withTableName("transactions")
 				.usingGeneratedKeyColumns("transaction_id");
 	}
