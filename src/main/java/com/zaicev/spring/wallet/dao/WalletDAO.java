@@ -6,13 +6,13 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 
 import com.zaicev.spring.wallet.models.Wallet;
-import com.zaicev.spring.wallet.models.WalletMapper;
 
 @Component
 public class WalletDAO {
@@ -28,6 +28,14 @@ public class WalletDAO {
 	private final String SQL_DELETE_WALLET = "DELETE FROM wallet WHERE wallet_id=?";
 
 	private static Map<Integer, Wallet> walletPool = new HashMap<Integer, Wallet>();
+	
+	private final RowMapper<Wallet> walletMapper = (rs, rowNum) -> {
+		Wallet wallet = new Wallet();
+		wallet.setName(rs.getString("wallet_name"));
+		wallet.setId(rs.getInt("wallet_id"));
+		wallet.setBalance(rs.getBigDecimal("wallet_balance"));		
+		return wallet;
+	};
 
 	@Autowired
 	public WalletDAO(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
@@ -40,7 +48,7 @@ public class WalletDAO {
 	public List<Wallet> getAllWallets() {
 		List<Wallet> wallets;
 		if (walletPool.size() == 0) {
-			wallets = jdbcTemplate.query(SQL_SELECT_WALLETS, new WalletMapper());
+			wallets = jdbcTemplate.query(SQL_SELECT_WALLETS, walletMapper);
 			wallets.forEach(x -> walletPool.put(x.getId(), x));
 			return wallets;
 		}
@@ -48,7 +56,7 @@ public class WalletDAO {
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
 		parameters.addValue("ids", walletPool.keySet());
 
-		wallets = namedParameterJdbcTemplate.query(SQL_SELECT_WALLETS_WITHOUT_CREATED, parameters, new WalletMapper());
+		wallets = namedParameterJdbcTemplate.query(SQL_SELECT_WALLETS_WITHOUT_CREATED, parameters, walletMapper);
 		wallets.addAll(walletPool.values());
 		return wallets;
 	}
@@ -58,7 +66,7 @@ public class WalletDAO {
 			return walletPool.get(id);
 		}
 
-		Wallet wallet = jdbcTemplate.queryForObject(SQL_SELECT_WALLET_BY_ID, new WalletMapper(), id);
+		Wallet wallet = jdbcTemplate.queryForObject(SQL_SELECT_WALLET_BY_ID, walletMapper, id);
 		walletPool.put(id, wallet);
 		return wallet;
 	}
