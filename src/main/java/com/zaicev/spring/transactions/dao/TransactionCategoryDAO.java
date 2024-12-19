@@ -7,9 +7,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Component;
 
 import com.zaicev.spring.transactions.models.TransactionCategory;
 
+@Component
 public class TransactionCategoryDAO {
 	private final JdbcTemplate jdbcTemplate;
 	private final SimpleJdbcInsert insertIntoTransactionCategory;
