@@ -28,12 +28,12 @@ public class WalletDAO {
 	private final String SQL_DELETE_WALLET = "DELETE FROM wallet WHERE wallet_id=?";
 
 	private static Map<Integer, Wallet> walletPool = new HashMap<Integer, Wallet>();
-	
+
 	private final RowMapper<Wallet> walletMapper = (rs, rowNum) -> {
 		Wallet wallet = new Wallet();
 		wallet.setName(rs.getString("wallet_name"));
 		wallet.setId(rs.getInt("wallet_id"));
-		wallet.setBalance(rs.getBigDecimal("wallet_balance"));		
+		wallet.setBalance(rs.getBigDecimal("wallet_balance"));
 		return wallet;
 	};
 
@@ -80,9 +80,11 @@ public class WalletDAO {
 		;
 	}
 
-	public void updateWallet(Wallet updatedWallet) {
-		jdbcTemplate.update(SQL_UPDATE_WALLET, updatedWallet.getName(), updatedWallet.getBalance(),
-				updatedWallet.getId());
+	public void updateWallet(Wallet updatedWallet, int id) {
+		jdbcTemplate.update(SQL_UPDATE_WALLET, updatedWallet.getName(), updatedWallet.getBalance(), id);
+		Wallet wallet = walletPool.get(id);
+		wallet.setName(updatedWallet.getName());
+		wallet.setBalance(updatedWallet.getBalance());
 	}
 
 	public void deleteWallet(int id) {
