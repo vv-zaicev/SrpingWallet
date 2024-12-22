@@ -1,10 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Доступные кошельки</title>
+<link href="/css/mainstyle.css" rel="stylesheet" type="text/css">
+<link href="/css/wallets.css" rel="stylesheet" type="text/css">
 </head>
 <body>
+	<div class="wrapper jcc">
+		<div class="container jcc">
 
+			<div class="wallets">
+				<div class="wallets-bar">
+					<div class="titles">Доступные кошельки</div>
+					<a href="/wallet/new" class="wallets-create"> <img
+						src="/icons/create.svg" alt="create" class="icon">
+					</a>
+				</div>
+
+				<div class="wallet" th:each="wallet: ${wallets}">
+					<a th:href="@{/wallet/{id}(id=${wallet.getId()})}" class="button">
+						<div class="wallet-name" th:text="${wallet.getName()}">WalletName</div>
+						<div class="wallet-balance" th:text="${wallet.getBalance()}"></div>
+					</a>
+					<div class="wallet-update">
+						<a th:href="@{/wallet/{id}/edit(id=${wallet.getId()})}"> <img
+							alt="update" src="/icons/update.svg" class="icon">
+						</a>
+						<form th:method="DELETE"
+							th:action="@{/wallet/{id}(id=${wallet.getId()})}"
+							class="wallet-remove">
+							<button type="submit">
+								<img src="/icons/delete.svg" alt="delete" class="icon">
+							</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
