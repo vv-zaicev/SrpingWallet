@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 
 import com.zaicev.spring.transactions.models.Transaction;
-import com.zaicev.spring.transactions.models.TransactionCategory;
 import com.zaicev.spring.transactions.models.TransactionType;
 import com.zaicev.spring.wallet.dao.WalletDAO;
 
@@ -24,31 +23,33 @@ public class TransactionDAO {
 	private SimpleJdbcInsert insertIntoUser;
 	private WalletDAO walletDAO;
 	private TransactionCategoryDAO transactionCategoryDAO;
-	
+
 	private final String SQL_SELECT_TRANSACTIONS = "SELECT * FROM transactions";
 	private final String SQL_SELECT_TRANSACTION_BY_ID = "SELECT * FROM transactions WHERE transaction_id=?";
 	private final String SQL_UPDATE_TRANSACTION = "UPDATE transactions SET transaction_description=?, transaction_type=?, transaction_date=?, transaction_sum=?, transaction_category=?, transaction_wallet=? WHERE transaction_id=?";
 	private final String SQL_DELETE_TRANSACTION = "DELETE FROM transactions WHERE transaction_id=?";
-	
+	private final String SQL_DELETE_TRANSACTIONS_BY_WALLET_ID = "DELETE FROM transactions WHERE transaction_wallet=?";
+
 	private final RowMapper<Transaction> transactionMapper = (rs, rowNum) -> {
 		Transaction transaction = new Transaction();
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTime(rs.getDate("transaction_date"));
-		
+
 		transaction.setId(rs.getInt("transaction_id"));
 		transaction.setSum(rs.getBigDecimal("transaction_sum"));
 		transaction.setType(TransactionType.valueOf(rs.getString("transaction_type")));
 		transaction.setDate(calendar);
 		transaction.setDescription(rs.getString("transaction_description"));
-		
+
 		transaction.setCategory(transactionCategoryDAO.getCategoryById(rs.getInt("transaction_category")));
 		transaction.setWallet(walletDAO.getWalletById(rs.getInt("transaction_wallet")));
-		
+
 		return transaction;
 	};
 
 	@Autowired
-	public TransactionDAO(JdbcTemplate jdbcTemplate, WalletDAO walletDAO, TransactionCategoryDAO transactionCategoryDAO) {
+	public TransactionDAO(JdbcTemplate jdbcTemplate, WalletDAO walletDAO,
+			TransactionCategoryDAO transactionCategoryDAO) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.walletDAO = walletDAO;
 		this.transactionCategoryDAO = transactionCategoryDAO;
@@ -78,13 +79,18 @@ public class TransactionDAO {
 	}
 
 	public void updateTransaction(Transaction updatedTrasnaction) {
-		jdbcTemplate.update(SQL_UPDATE_TRANSACTION, updatedTrasnaction.getDescription(), updatedTrasnaction.getType().toString(),
-				updatedTrasnaction.getDate(), updatedTrasnaction.getSum(), updatedTrasnaction.getCategory().getId(),
-				updatedTrasnaction.getWallet().getId(), updatedTrasnaction.getId());
+		jdbcTemplate.update(SQL_UPDATE_TRANSACTION, updatedTrasnaction.getDescription(),
+				updatedTrasnaction.getType().toString(), updatedTrasnaction.getDate(), updatedTrasnaction.getSum(),
+				updatedTrasnaction.getCategory().getId(), updatedTrasnaction.getWallet().getId(),
+				updatedTrasnaction.getId());
 	}
 
 	public void deleteTransaction(int id) {
 		jdbcTemplate.update(SQL_DELETE_TRANSACTION, id);
+	}
+
+	public void deleteTransactionsByWalletId(int id) {
+		jdbcTemplate.update(SQL_DELETE_TRANSACTIONS_BY_WALLET_ID, id);
 	}
 
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zaicev.spring.transactions.dao.TransactionDAO;
 import com.zaicev.spring.wallet.dao.WalletDAO;
 import com.zaicev.spring.wallet.models.Wallet;
 
@@ -20,6 +21,8 @@ public class WalletController {
 
 	@Autowired
 	private WalletDAO walletDAO;
+	@Autowired
+	private TransactionDAO transactionDAO;
 
 	@GetMapping()
 	public String index(Model model) {
@@ -59,6 +62,7 @@ public class WalletController {
 
 	@DeleteMapping("/{id}")
 	public String delete(@PathVariable("id") int id) {
+		transactionDAO.deleteTransactionsByWalletId(id);
 		walletDAO.deleteWallet(id);
 		return "redirect:/wallet";
 	}
