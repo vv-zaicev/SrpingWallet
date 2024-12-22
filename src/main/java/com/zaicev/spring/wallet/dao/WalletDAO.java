@@ -89,5 +89,6 @@ public class WalletDAO {
 
 	public void deleteWallet(int id) {
 		jdbcTemplate.update(SQL_DELETE_WALLET, id);
+		walletPool.remove(id);
 	}
 }
