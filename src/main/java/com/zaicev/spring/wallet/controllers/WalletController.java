@@ -23,13 +23,13 @@ public class WalletController {
 
 	@GetMapping()
 	public String index(Model model) {
-		model.addAttribute("wallets", walletDAO.index());
+		model.addAttribute("wallets", walletDAO.getAllWallets());
 		return "wallet/index";
 	}
 
 	@GetMapping("/{id}")
 	public String show(@PathVariable("id") int id, Model model) {
-		model.addAttribute("wallet", walletDAO.get(id));
+		model.addAttribute("wallet", walletDAO.getWalletById(id));
 		return "wallet/show";
 	}
 
@@ -41,25 +41,25 @@ public class WalletController {
 
 	@GetMapping("/{id}/edit")
 	public String edit(@PathVariable("id") int id, Model model) {
-		model.addAttribute("wallet", walletDAO.get(id));
+		model.addAttribute("wallet", walletDAO.getWalletById(id));
 		return "wallet/edit";
 	}
 
 	@PostMapping()
 	public String create(@ModelAttribute("wallet") Wallet wallet) {
-		walletDAO.save(wallet);
+		walletDAO.createWallet(wallet);;
 		return "redirect:/wallet";
 	}
 
 	@PatchMapping()
 	public String update(@ModelAttribute("wallet") Wallet wallet) {
-		walletDAO.update(wallet);
+		walletDAO.updateWallet(wallet);
 		return "redirect:/wallet";
 	}
 
 	@DeleteMapping("/{id}")
 	public String delete(@PathVariable("id") int id) {
-		walletDAO.delete(id);
+		walletDAO.deleteWallet(id);
 		return "redirect:/wallet";
 	}
 }
