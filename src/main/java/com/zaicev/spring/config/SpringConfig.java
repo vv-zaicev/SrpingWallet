@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -33,6 +34,16 @@ public class SpringConfig implements WebMvcConfigurer {
 		this.applicationContext = applicationContext;
 		this.env = environment;
 	}
+	
+	
+
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/css/**").addResourceLocations("/WEB-INF/css/");
+		registry.addResourceHandler("/js/**").addResourceLocations("/WEB-INF/js/");
+		registry.addResourceHandler("/icons/**").addResourceLocations("/WEB-INF/icons/");
+	}
+
 
 	@Bean
 	public SpringResourceTemplateResolver templateResolver() {
