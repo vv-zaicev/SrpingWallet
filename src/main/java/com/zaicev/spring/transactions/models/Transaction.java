@@ -1,6 +1,7 @@
 package com.zaicev.spring.transactions.models;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import com.zaicev.spring.wallet.models.Wallet;
@@ -43,6 +44,11 @@ public class Transaction {
 
 	public Calendar getDate() {
 		return date;
+	}
+	
+	public String getStringDate() {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+		return dateFormat.format(date.getTime());
 	}
 
 	public void setDate(Calendar date) {
