@@ -1,5 +1,9 @@
 package com.zaicev.spring.wallet.controllers;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +15,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zaicev.spring.transactions.dao.TransactionCategoryDAO;
 import com.zaicev.spring.transactions.dao.TransactionDAO;
+import com.zaicev.spring.transactions.models.TransactionCategory;
 import com.zaicev.spring.wallet.dao.WalletDAO;
 import com.zaicev.spring.wallet.models.Wallet;
 
@@ -23,6 +29,8 @@ public class WalletController {
 	private WalletDAO walletDAO;
 	@Autowired
 	private TransactionDAO transactionDAO;
+	@Autowired
+	private TransactionCategoryDAO transactionCategoryDAO;
 
 	@GetMapping()
 	public String index(Model model) {
@@ -32,7 +40,25 @@ public class WalletController {
 
 	@GetMapping("/{id}")
 	public String show(@PathVariable("id") int id, Model model) {
-		model.addAttribute("wallet", walletDAO.getWalletById(id));
+		Wallet wallet = walletDAO.getWalletById(id);
+		wallet.clearTranactions();
+		wallet.addTransactions(transactionDAO.getAllTransactions(id));
+		List<TransactionCategory> transactionCategories = transactionCategoryDAO.getAllCategories();
+		
+		BigDecimal divider = wallet.getIncome().max(wallet.getExpenses());
+		BigDecimal incomePercent = new BigDecimal(100);
+		BigDecimal expensesPercent = new BigDecimal(100);
+		if (!divider.equals(BigDecimal.ZERO)) {
+			incomePercent = wallet.getIncome().divide(divider, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
+			expensesPercent = wallet.getExpenses().divide(divider, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
+		} 
+		
+		model.addAttribute("wallet", wallet);
+		model.addAttribute("categories", transactionCategories);
+		model.addAttribute("incomePercent", incomePercent);
+		model.addAttribute("expensesPercent", expensesPercent);
+		
+		
 		return "wallet/show";
 	}
 
@@ -50,7 +76,7 @@ public class WalletController {
 
 	@PostMapping()
 	public String create(@ModelAttribute("wallet") Wallet wallet) {
-		walletDAO.createWallet(wallet);;
+		walletDAO.createWallet(wallet);
 		return "redirect:/wallet";
 	}
 
