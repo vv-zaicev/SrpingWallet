@@ -59,5 +59,13 @@ public class Wallet {
 	public List<Transaction> getTransactions() {
 		return transactions;
 	}
+	
+	public void addTransactions(List<Transaction> transactions) {
+		this.transactions.addAll(transactions);
+	}
+	
+	public void clearTranactions() {
+		transactions.clear();
+	}
 
 }
