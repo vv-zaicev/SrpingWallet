@@ -1,12 +1,14 @@
 package com.zaicev.spring.wallet.models;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.zaicev.spring.transactions.models.Transaction;
+import com.zaicev.spring.transactions.models.TransactionType;
 
 public class Wallet {
-	private List<Transaction> transactions;
+	private List<Transaction> transactions = new ArrayList<Transaction>();
 	private BigDecimal balance;
 	private String name;
 	private int id;
@@ -30,11 +32,11 @@ public class Wallet {
 	}
 
 	public BigDecimal getIncome() {
-		return null;
+		return transactions.stream().filter(x -> x.getType() == TransactionType.INCOME).map(Transaction::getSum).reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 
 	public BigDecimal getExpenses() {
-		return null;
+		return transactions.stream().filter(x -> x.getType() == TransactionType.EXPENSES).map(Transaction::getSum).reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 
 
