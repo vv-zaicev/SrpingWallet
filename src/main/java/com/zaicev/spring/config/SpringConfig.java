@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -20,6 +21,9 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 
+import com.zaicev.spring.transactions.conversion.TransactionCategoryConverter;
+import com.zaicev.spring.transactions.dao.TransactionCategoryDAO;
+
 @Configuration
 @ComponentScan("com.zaicev.spring")
 @PropertySource("classpath:application.properties")
@@ -29,13 +33,12 @@ public class SpringConfig implements WebMvcConfigurer {
 	private final ApplicationContext applicationContext;
 	private final Environment env;
 
+
 	@Autowired
 	public SpringConfig(ApplicationContext applicationContext, Environment environment) {
 		this.applicationContext = applicationContext;
 		this.env = environment;
 	}
-	
-	
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -44,6 +47,10 @@ public class SpringConfig implements WebMvcConfigurer {
 		registry.addResourceHandler("/icons/**").addResourceLocations("/WEB-INF/icons/");
 	}
 
+	@Override
+	public void addFormatters(FormatterRegistry registry) {
+		registry.addFormatter(transactionCategoryConverter());
+	}
 
 	@Bean
 	public SpringResourceTemplateResolver templateResolver() {
@@ -86,10 +93,20 @@ public class SpringConfig implements WebMvcConfigurer {
 	public JdbcTemplate jdbcTemplate() {
 		return new JdbcTemplate(dataSource());
 	}
-	
+
 	@Bean
 	public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
 		return new NamedParameterJdbcTemplate(dataSource());
+	}
+	
+	@Bean
+	public TransactionCategoryDAO transactionCategoryDAO() {
+		return new TransactionCategoryDAO(jdbcTemplate());
+	}
+	
+	@Bean
+	public TransactionCategoryConverter transactionCategoryConverter() {
+		return new TransactionCategoryConverter(transactionCategoryDAO());
 	}
 
 }
