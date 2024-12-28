@@ -140,7 +140,7 @@
 							<div class="transaction-right">
 								<div class="transaction-sum"
 									th:style="${transaction.getType() == T(com.zaicev.spring.transactions.models.TransactionType).INCOME} ? 'color : green;' : 'color : red;'"
-									th:text="${transaction.getType() == T(com.zaicev.spring.transactions.models.TransactionType).INCOME} ? '+' : '-' + ${transaction.getSum()}">sum</div>
+									th:text="${transaction.getType() == T(com.zaicev.spring.transactions.models.TransactionType).INCOME} ? '+' + ${transaction.getSum()} : '-' + ${transaction.getSum()}">sum</div>
 								<div class="transaction-date"
 									th:text="${transaction.getStringDate()}">date</div>
 
