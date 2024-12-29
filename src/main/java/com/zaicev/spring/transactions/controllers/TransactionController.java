@@ -1,6 +1,11 @@
 package com.zaicev.spring.transactions.controllers;
 
+import java.math.BigDecimal;
+import java.util.GregorianCalendar;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,9 +15,16 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.zaicev.spring.transactions.dao.TransactionCategoryDAO;
 import com.zaicev.spring.transactions.dao.TransactionDAO;
 import com.zaicev.spring.transactions.models.Transaction;
+import com.zaicev.spring.transactions.models.TransactionCategory;
+import com.zaicev.spring.transactions.models.TransactionType;
+import com.zaicev.spring.wallet.dao.WalletDAO;
 import com.zaicev.spring.wallet.models.Wallet;
 
 @Controller
@@ -20,47 +32,55 @@ import com.zaicev.spring.wallet.models.Wallet;
 public class TransactionController {
 	@Autowired
 	private TransactionDAO transactionDAO;
+	@Autowired
+	private TransactionCategoryDAO transactionCategoryDAO;
+	@Autowired
+	private WalletDAO walletDAO;
 
-	@GetMapping()
 	public String index(Model model, @ModelAttribute("wallet") Wallet wallet) {
-		model.addAttribute("transactions", transactionDAO.index(wallet.getId()));
-		return null; //json
+		model.addAttribute("transactions", transactionDAO.getAllTransactions(wallet.getId()));
+		return null;
 	}
 
 	@GetMapping("/{id}")
 	public String show(@PathVariable("id") int id, Model model) {
-		model.addAttribute("transaction", transactionDAO.get(id));
+		model.addAttribute("transaction", transactionDAO.getTransactionById(id));
 		return "transactions/show";
 	}
 
 	@GetMapping("/new")
-	public String newTransaction(Model model) {
+	public String newTransaction(@RequestParam("wallet_id") int walletId, Model model) {
 		model.addAttribute("transaction", new Transaction());
+		model.addAttribute("categories", transactionCategoryDAO.getAllCategories());
+		model.addAttribute("walletId", walletId);
 		return "transactions/new";
 	}
 
 	@GetMapping("/{id}/edit")
 	public String edit(@PathVariable("id") int id, Model model) {
-		model.addAttribute("transaction", transactionDAO.get(id));
+		model.addAttribute("transaction", transactionDAO.getTransactionById(id));
 		return "transactions/edit";
 	}
 
 	@PostMapping()
-	public String create(@ModelAttribute("transaction") Transaction transaction) {
-		transactionDAO.save(transaction);
-		return "redirect:/wallet/" + transaction.getWallet().getId();
+	public String create(@ModelAttribute("transaction") Transaction transaction,
+			@RequestParam("wallet_id") int walletId) {
+		Wallet wallet = walletDAO.getWalletById(walletId);
+		transaction.setWallet(wallet);
+		transactionDAO.createTransaction(transaction);
+		return "redirect:/wallet/" + wallet.getId();
 	}
 
-	@PatchMapping()
+	@PatchMapping("/{id}")
 	public String update(@ModelAttribute("transaction") Transaction transaction) {
-		transactionDAO.update(transaction);
+		transactionDAO.updateTransaction(transaction);
 		return "redirect:/wallet/" + transaction.getWallet().getId();
 	}
 
 	@DeleteMapping("/{id}")
 	public String delete(@PathVariable("id") int id) {
-		int walletId = transactionDAO.get(id).getWallet().getId();
-		transactionDAO.delete(id);	
+		int walletId = transactionDAO.getTransactionById(id).getWallet().getId();
+		transactionDAO.deleteTransaction(id);
 		return "redirect:/wallet/" + walletId;
 	}
 }
