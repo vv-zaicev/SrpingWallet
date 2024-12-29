@@ -4,12 +4,15 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.zaicev.spring.wallet.models.Wallet;
 
 public class Transaction {
     private String description;
     private BigDecimal sum;
     private TransactionType type;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Calendar date;
     private int id;
     private Wallet wallet;
