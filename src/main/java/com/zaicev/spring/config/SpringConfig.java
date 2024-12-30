@@ -23,6 +23,8 @@ import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 
 import com.zaicev.spring.transactions.conversion.TransactionCategoryConverter;
 import com.zaicev.spring.transactions.dao.TransactionCategoryDAO;
+import com.zaicev.spring.wallet.conversion.WalletConverter;
+import com.zaicev.spring.wallet.dao.WalletDAO;
 
 @Configuration
 @ComponentScan("com.zaicev.spring")
@@ -32,7 +34,6 @@ public class SpringConfig implements WebMvcConfigurer {
 
 	private final ApplicationContext applicationContext;
 	private final Environment env;
-
 
 	@Autowired
 	public SpringConfig(ApplicationContext applicationContext, Environment environment) {
@@ -50,6 +51,7 @@ public class SpringConfig implements WebMvcConfigurer {
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
 		registry.addFormatter(transactionCategoryConverter());
+		registry.addFormatter(walletConverter());
 	}
 
 	@Bean
@@ -98,15 +100,25 @@ public class SpringConfig implements WebMvcConfigurer {
 	public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
 		return new NamedParameterJdbcTemplate(dataSource());
 	}
-	
+
 	@Bean
 	public TransactionCategoryDAO transactionCategoryDAO() {
 		return new TransactionCategoryDAO(jdbcTemplate());
 	}
-	
+
 	@Bean
 	public TransactionCategoryConverter transactionCategoryConverter() {
 		return new TransactionCategoryConverter(transactionCategoryDAO());
+	}
+
+	@Bean
+	public WalletDAO walletDAO() {
+		return new WalletDAO(jdbcTemplate(), namedParameterJdbcTemplate());
+	}
+
+	@Bean
+	WalletConverter walletConverter() {
+		return new WalletConverter(walletDAO());
 	}
 
 }
