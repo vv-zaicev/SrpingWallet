@@ -1,11 +1,6 @@
 package com.zaicev.spring.transactions.controllers;
 
-import java.math.BigDecimal;
-import java.util.GregorianCalendar;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,13 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.zaicev.spring.transactions.dao.TransactionCategoryDAO;
 import com.zaicev.spring.transactions.dao.TransactionDAO;
 import com.zaicev.spring.transactions.models.Transaction;
-import com.zaicev.spring.transactions.models.TransactionCategory;
-import com.zaicev.spring.transactions.models.TransactionType;
 import com.zaicev.spring.wallet.dao.WalletDAO;
 import com.zaicev.spring.wallet.models.Wallet;
 
@@ -38,7 +29,7 @@ public class TransactionController {
 	private WalletDAO walletDAO;
 
 	public String index(Model model, @ModelAttribute("wallet") Wallet wallet) {
-		model.addAttribute("transactions", transactionDAO.getAllTransactions(wallet.getId()));
+		model.addAttribute("transactions", transactionDAO.getAllTransactions());
 		return null;
 	}
 
@@ -59,6 +50,7 @@ public class TransactionController {
 	@GetMapping("/{id}/edit")
 	public String edit(@PathVariable("id") int id, Model model) {
 		model.addAttribute("transaction", transactionDAO.getTransactionById(id));
+		model.addAttribute("categories", transactionCategoryDAO.getAllCategories());
 		return "transactions/edit";
 	}
 
@@ -71,7 +63,7 @@ public class TransactionController {
 		return "redirect:/wallet/" + wallet.getId();
 	}
 
-	@PatchMapping("/{id}")
+	@PatchMapping()
 	public String update(@ModelAttribute("transaction") Transaction transaction) {
 		transactionDAO.updateTransaction(transaction);
 		return "redirect:/wallet/" + transaction.getWallet().getId();
