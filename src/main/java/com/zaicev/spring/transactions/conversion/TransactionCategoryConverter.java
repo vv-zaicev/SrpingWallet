@@ -18,7 +18,6 @@ public class TransactionCategoryConverter implements Formatter<TransactionCatego
 
 	@Override
 	public String print(TransactionCategory object, Locale locale) {
-		System.out.println(object.getId());
 		return (object != null ? Integer.toString(object.getId()) : "");
 	}
 
