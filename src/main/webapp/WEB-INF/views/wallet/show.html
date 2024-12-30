@@ -34,13 +34,13 @@
 								<div class="parm">Доход</div>
 								<div class="value" th:text="${wallet.getIncome()}">Income</div>
 							</div>
-							<div class="income-bar" th:style="'width: ' + ${incomePercent}"></div>
+							<div class="income-bar" th:style="'width: ' + ${incomePercent} + '%'"></div>
 							<div class="cash-parms red">
 								<div class="parm">Расход</div>
 								<div class="value" th:text="${wallet.getExpenses()}">Expenses</div>
 							</div>
 							<div class="expenses-bar"
-								th:style="'width: ' + ${expensesPercent}"></div>
+								th:style="'width: ' + ${expensesPercent} + '%'"></div>
 						</div>
 					</div>
 				</div>

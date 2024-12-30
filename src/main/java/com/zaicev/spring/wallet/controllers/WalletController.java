@@ -49,8 +49,8 @@ public class WalletController {
 		BigDecimal incomePercent = new BigDecimal(100);
 		BigDecimal expensesPercent = new BigDecimal(100);
 		if (!divider.equals(BigDecimal.ZERO)) {
-			incomePercent = wallet.getIncome().divide(divider, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
-			expensesPercent = wallet.getExpenses().divide(divider, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
+			incomePercent = wallet.getIncome().divide(divider, 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
+			expensesPercent = wallet.getExpenses().divide(divider, 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
 		} 
 		
 		model.addAttribute("wallet", wallet);
