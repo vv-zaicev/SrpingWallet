@@ -42,7 +42,7 @@ public class WalletController {
 	public String show(@PathVariable("id") int id, Model model) {
 		Wallet wallet = walletDAO.getWalletById(id);
 		wallet.clearTranactions();
-		wallet.addTransactions(transactionDAO.getAllTransactions(id));
+		wallet.addTransactions(transactionDAO.getTransactionsByWalletId(id));
 		List<TransactionCategory> transactionCategories = transactionCategoryDAO.getAllCategories();
 		
 		BigDecimal divider = wallet.getIncome().max(wallet.getExpenses());
