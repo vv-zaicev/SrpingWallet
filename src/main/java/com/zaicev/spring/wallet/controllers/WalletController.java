@@ -80,9 +80,9 @@ public class WalletController {
 		return "redirect:/wallet";
 	}
 
-	@PatchMapping("/{id}")
-	public String update(@ModelAttribute("wallet") Wallet wallet, @PathVariable("id") int id) {
-		walletDAO.updateWallet(wallet, id);
+	@PatchMapping()
+	public String update(@ModelAttribute("wallet") Wallet wallet) {
+		walletDAO.updateWallet(wallet);
 		return "redirect:/wallet";
 	}
 

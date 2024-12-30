@@ -76,9 +76,9 @@ public class WalletDAO {
 		;
 	}
 
-	public void updateWallet(Wallet updatedWallet, int id) {
-		jdbcTemplate.update(SQL_UPDATE_WALLET, updatedWallet.getName(), updatedWallet.getBalance(), id);
-		Wallet wallet = walletPool.get(id);
+	public void updateWallet(Wallet updatedWallet) {
+		jdbcTemplate.update(SQL_UPDATE_WALLET, updatedWallet.getName(), updatedWallet.getBalance(), updatedWallet.getId());
+		Wallet wallet = walletPool.get(updatedWallet.getId());
 		wallet.setName(updatedWallet.getName());
 		wallet.setBalance(updatedWallet.getBalance());
 	}
