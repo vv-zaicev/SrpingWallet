@@ -26,6 +26,7 @@ public class TransactionDAO {
 
 	private final String SQL_SELECT_TRANSACTIONS = "SELECT * FROM transactions";
 	private final String SQL_SELECT_TRANSACTION_BY_ID = "SELECT * FROM transactions WHERE transaction_id=?";
+	private final String SQL_SELECT_TRANSACTIONS_BY_WALLET_ID = "SELECT * FROM transactions WHERE transaction_wallet=?";
 	private final String SQL_UPDATE_TRANSACTION = "UPDATE transactions SET transaction_description=?, transaction_type=?, transaction_date=?, transaction_sum=?, transaction_category=?, transaction_wallet=? WHERE transaction_id=?";
 	private final String SQL_DELETE_TRANSACTION = "DELETE FROM transactions WHERE transaction_id=?";
 	private final String SQL_DELETE_TRANSACTIONS_BY_WALLET_ID = "DELETE FROM transactions WHERE transaction_wallet=?";
@@ -57,8 +58,12 @@ public class TransactionDAO {
 				.usingGeneratedKeyColumns("transaction_id");
 	}
 
-	public List<Transaction> getAllTransactions(int walletId) {
+	public List<Transaction> getAllTransactions() {
 		return jdbcTemplate.query(SQL_SELECT_TRANSACTIONS, transactionMapper);
+	}
+	
+	public List<Transaction> getTransactionsByWalletId(int walletId) {
+		return jdbcTemplate.query(SQL_SELECT_TRANSACTIONS_BY_WALLET_ID, transactionMapper, walletId);
 	}
 
 	public Transaction getTransactionById(int id) {
