@@ -58,8 +58,13 @@ public class TransactionController {
 	public String create(@ModelAttribute("transaction") Transaction transaction,
 			@RequestParam("wallet_id") int walletId) {
 		Wallet wallet = walletDAO.getWalletById(walletId);
+		
 		transaction.setWallet(wallet);
+		
+		wallet.addTransaction(transaction);
+		walletDAO.updateWallet(wallet);
 		transactionDAO.createTransaction(transaction);
+		
 		return "redirect:/wallet/" + wallet.getId();
 	}
 
@@ -71,8 +76,13 @@ public class TransactionController {
 
 	@DeleteMapping("/{id}")
 	public String delete(@PathVariable("id") int id) {
-		int walletId = transactionDAO.getTransactionById(id).getWallet().getId();
-		transactionDAO.deleteTransaction(id);
-		return "redirect:/wallet/" + walletId;
+		Transaction transaction = transactionDAO.getTransactionById(id);
+		Wallet wallet = transaction.getWallet();
+
+		wallet.removeTransaction(transaction);
+		walletDAO.updateWallet(wallet);
+		transactionDAO.deleteTransaction(transaction.getId());
+
+		return "redirect:/wallet/" + wallet.getId();
 	}
 }

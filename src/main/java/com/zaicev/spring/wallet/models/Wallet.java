@@ -3,6 +3,7 @@ package com.zaicev.spring.wallet.models;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import com.zaicev.spring.transactions.models.Transaction;
 import com.zaicev.spring.transactions.models.TransactionType;
@@ -32,13 +33,14 @@ public class Wallet {
 	}
 
 	public BigDecimal getIncome() {
-		return transactions.stream().filter(x -> x.getType() == TransactionType.INCOME).map(Transaction::getSum).reduce(BigDecimal.ZERO, BigDecimal::add);
+		return transactions.stream().filter(x -> x.getType() == TransactionType.INCOME).map(Transaction::getSum)
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 
 	public BigDecimal getExpenses() {
-		return transactions.stream().filter(x -> x.getType() == TransactionType.EXPENSES).map(Transaction::getSum).reduce(BigDecimal.ZERO, BigDecimal::add);
+		return transactions.stream().filter(x -> x.getType() == TransactionType.EXPENSES).map(Transaction::getSum)
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
-
 
 	public String getName() {
 		return name;
@@ -59,13 +61,35 @@ public class Wallet {
 	public List<Transaction> getTransactions() {
 		return transactions;
 	}
-	
+
 	public void addTransactions(List<Transaction> transactions) {
 		this.transactions.addAll(transactions);
 	}
-	
+
 	public void clearTranactions() {
 		transactions.clear();
+	}
+
+	public void addTransaction(Transaction transaction) {
+		transactions.add(transaction);
+		changeBalance(transaction, x -> x == TransactionType.INCOME);
+	}
+
+	public void removeTransaction(Transaction transaction) {
+		transactions.remove(transaction);
+		changeBalance(transaction, x -> x == TransactionType.EXPENSES);
+	}
+
+	public void updateTransaction(Transaction transaction) {
+		//TODO
+	}
+
+	private void changeBalance(Transaction transaction, Predicate<TransactionType> predicate) {
+		if (predicate.test(transaction.getType())) {
+			balance = balance.add(transaction.getSum());
+		} else {
+			balance = balance.subtract(transaction.getSum());
+		}
 	}
 
 }
