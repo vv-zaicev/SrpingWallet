@@ -2,6 +2,7 @@ package com.zaicev.spring.wallet.models;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -59,7 +60,8 @@ public class Wallet {
 	}
 
 	public List<Transaction> getTransactions() {
-		return transactions;
+		List<Transaction> copyTransactions = transactions.stream().sorted().toList();
+		return copyTransactions;
 	}
 
 	public void addTransactions(List<Transaction> transactions) {
