@@ -8,7 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.zaicev.spring.wallet.models.Wallet;
 
-public class Transaction {
+public class Transaction implements Comparable<Transaction>{
     private String description;
     private BigDecimal sum;
     private TransactionType type;
@@ -81,6 +81,19 @@ public class Transaction {
 
 	public void setCategory(TransactionCategory category) {
 		this.category = category;
+	}
+
+	@Override
+	public int compareTo(Transaction o) {
+		return o.getDate().compareTo(this.getDate());
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Transaction)) {
+			return false;
+		}
+		return ((Transaction) obj).getId() == this.getId();
 	}
     
 	
