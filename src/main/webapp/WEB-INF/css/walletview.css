@@ -112,6 +112,7 @@
 }
 
 .wallet-name {
+	display: inline-block;
 	margin: 5px 0;
 	font-size: 40px;
 }
@@ -176,7 +177,6 @@
 	padding: 0 5px;
 }
 
-
 .show {
 	transition-duration: 0.3s;
 	margin-left: 10px;
@@ -203,7 +203,6 @@
 	transition: max-height 0.2s ease-out;
 }
 
-
 .filters-row {
 	display: flex;
 	flex-wrap: wrap;
@@ -223,7 +222,7 @@
 	margin: 5px 0;
 }
 
-.filters .input{
+.filters .input {
 	margin: 5px 0;
 	display: inline-block;
 }
@@ -231,3 +230,10 @@
 .filters .button {
 	margin: 5px 0;
 }
+
+.back-icon {
+	display: inline-block;
+	line-height: 40px;
+	margin-right: 5px;
+}
+
