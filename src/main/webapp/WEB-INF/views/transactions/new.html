@@ -9,27 +9,35 @@
 <body>
 	<div class="wrapper jcc">
 		<div class="container jcc">
-			<form method="post" th:action="@{/transaction?wallet_id={id}(id=${walletId})}" th:object="${transaction}"
-				class="create">
+			<div class="cancel-label">
+				<a href="javascript:history.back()" class="cancel-icon"><img
+					src="/icons/cancel.svg" alt="cancel" class="icon"></a>
+			</div>
+			<form method="post"
+				th:action="@{/transaction?wallet_id={id}(id=${walletId})}"
+				th:object="${transaction}" class="create">
 				<div class="selectTransactionType">
-				<select th:field="*{type}" id="selectTransactionType"
+					<select th:field="*{type}" id="selectTransactionType"
 						onchange="changeTransactionType(this)">
 						<option value="" style='color: #FFF' selected>Тип</option>
-						<option th:value="${T(com.zaicev.spring.transactions.models.TransactionType).INCOME}" style='color: green'>Доход</option>
-						<option th:value="${T(com.zaicev.spring.transactions.models.TransactionType).EXPENSES}" style='color: red'>Расход</option>
+						<option
+							th:value="${T(com.zaicev.spring.transactions.models.TransactionType).INCOME}"
+							style='color: green'>Доход</option>
+						<option
+							th:value="${T(com.zaicev.spring.transactions.models.TransactionType).EXPENSES}"
+							style='color: red'>Расход</option>
 					</select>
 				</div>
 				<div class="selectTransactionCategory">
 					<select th:field="*{category}" id="selectTransactionCategory">
-						<option th:each="category : ${categories}" th:value="${category.getId()}" th:text="${category.getName()}">Category</option>
+						<option th:each="category : ${categories}"
+							th:value="${category.getId()}" th:text="${category.getName()}">Category</option>
 					</select>
 				</div>
-				<input type="number"
-					step="0.01" name="sum" placeholder="Сумма" class="input"
-					required th:field="*{sum}">
-				<input type="text" name="description" placeholder="Описание" class="input"
-					required th:field="*{description}"> 
-				<input type="date"
+				<input type="number" step="0.01" name="sum" placeholder="Сумма"
+					class="input" required th:field="*{sum}"> <input
+					type="text" name="description" placeholder="Описание" class="input"
+					required th:field="*{description}"> <input type="date"
 					name="date" th:field="*{date}" class="input" required>
 				<button type="submit" class="button">Сохранить</button>
 			</form>

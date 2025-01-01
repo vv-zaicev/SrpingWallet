@@ -8,6 +8,10 @@
 <body>
 	<div class="wrapper jcc">
 		<div class="container jcc">
+			<div class="cancel-label">
+				<a href="javascript:history.back()" class="cancel-icon"><img
+					src="/icons/cancel.svg" alt="cancel" class="icon"></a>
+			</div>
 			<form method="post" action="/wallet" th:object="${wallet}"
 				class="create">
 				<input type="text" name="name" placeholder="Название" class="input"

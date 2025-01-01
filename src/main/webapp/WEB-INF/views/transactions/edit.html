@@ -9,8 +9,11 @@
 <body>
 	<div class="wrapper jcc">
 		<div class="container jcc">
-			<form th:method="PATCH"
-				th:action="@{/transaction}"
+			<div class="cancel-label">
+				<a href="javascript:history.back()" class="cancel-icon"><img
+					src="/icons/cancel.svg" alt="cancel" class="icon"></a>
+			</div>
+			<form th:method="PATCH" th:action="@{/transaction}"
 				th:object="${transaction}" class="create">
 				<div class="selectTransactionType">
 					<select th:field="*{type}" id="selectTransactionType"
@@ -33,9 +36,9 @@
 					class="input" required th:field="*{sum}"> <input
 					type="text" name="description" placeholder="Описание" class="input"
 					required th:field="*{description}"> <input type="date"
-					name="date" th:field="*{date}" class="input" required>
-				<input type="text" th:field="*{id}" hidden>
-				<input type="text" th:field="*{wallet}" hidden>
+					name="date" th:field="*{date}" class="input" required> <input
+					type="text" th:field="*{id}" hidden> <input type="text"
+					th:field="*{wallet}" hidden>
 				<button type="submit" class="button">Сохранить</button>
 			</form>
 		</div>
