@@ -49,8 +49,11 @@ public class TransactionController {
 
 	@GetMapping("/{id}/edit")
 	public String edit(@PathVariable("id") int id, Model model) {
-		model.addAttribute("transaction", transactionDAO.getTransactionById(id));
+		Transaction transaction = transactionDAO.getTransactionById(id);
+
+		model.addAttribute("transaction", transaction);
 		model.addAttribute("categories", transactionCategoryDAO.getAllCategories());
+
 		return "transactions/edit";
 	}
 
@@ -58,19 +61,24 @@ public class TransactionController {
 	public String create(@ModelAttribute("transaction") Transaction transaction,
 			@RequestParam("wallet_id") int walletId) {
 		Wallet wallet = walletDAO.getWalletById(walletId);
-		
+
 		transaction.setWallet(wallet);
-		
+
 		wallet.addTransaction(transaction);
 		walletDAO.updateWallet(wallet);
 		transactionDAO.createTransaction(transaction);
-		
+
 		return "redirect:/wallet/" + wallet.getId();
 	}
 
 	@PatchMapping()
 	public String update(@ModelAttribute("transaction") Transaction transaction) {
+		Wallet wallet = transaction.getWallet();
+
+		wallet.updateTransaction(transaction);
+		walletDAO.updateWallet(wallet);
 		transactionDAO.updateTransaction(transaction);
+
 		return "redirect:/wallet/" + transaction.getWallet().getId();
 	}
 
