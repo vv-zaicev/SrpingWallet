@@ -1,21 +1,22 @@
 function loadTransactions(count) {
 	var show = document.getElementById("show");
 	var hide = document.getElementById("hide");
-	var transactions = document.getElementById("transactions");
+	var transactions = document.getElementById("transactions").children;
+	
 
 
-	if (transactions.childElementCount <= 5) {
+	if (transactions.length <= 5) {
 		show.style.display = "none";
 		hide.style.display = "none";
 	} else if (count == 0) {
-		for(let i = 0; i < transactions.childElementCount; i++){
-			transactions.childNodes[i].style.display = "block";
+		for(let i = 0; i < transactions.length; i++){
+			transactions[i].style.display = "flex";
 		}
 		hide.style.display = "inline-block";
 		show.style.display = "none";
 	} else {
-		for(let i = count; i < transactions.childElementCount; i++){
-			transactions.childNodes[i].style.display = "none";
+		for(let i = count; i < transactions.length; i++){
+			transactions[i].style.display = "none";
 		}
 		show.style.display = "inline-block";
 		hide.style.display = "none";
