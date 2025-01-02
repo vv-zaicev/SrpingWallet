@@ -141,7 +141,8 @@
 							th:each="transaction : ${wallet.getTransactions()}">
 							<div class="transaction-left">
 								<div class="transaction-cat"
-									th:text="${transaction.getCategory().getName()}">Category</div>
+									th:text="${transaction.getCategory() != null} ? ${transaction.getCategory().getName()} : 'DELETED'"
+									th:style="${transaction.getCategory() != null} ? '' : 'color : red'">Category</div>
 								<div class="transaction-des"
 									th:text="${transaction.getDescription}">Description</div>
 							</div>
