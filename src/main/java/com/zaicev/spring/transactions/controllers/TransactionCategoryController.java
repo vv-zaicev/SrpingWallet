@@ -20,7 +20,9 @@ public class TransactionCategoryController {
 	@Autowired
 	TransactionCategoryDAO transactionCategoryDAO;
 
+	@GetMapping()
 	public String index(Model model) {
+		model.addAttribute("categories", transactionCategoryDAO.getAllCategories());
 		return "transactionCategory/index";
 	}
 

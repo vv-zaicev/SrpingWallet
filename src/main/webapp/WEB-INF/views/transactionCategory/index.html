@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Категории</title>
+<link href="/css/mainstyle.css" rel="stylesheet" type="text/css">
+<link href="/css/categories.css" rel="stylesheet" type="text/css">
+<script src="/js/Wallets.js"></script>
+</head>
+<body>
+	<div class="wrapper jcc">
+		<div class="container jcc">
+
+			<div class="categories">
+				<div class="categories-bar">
+					<div class="categories-title">Категории:</div>
+					<a href="/transactioncategory/new" class="categories-create"> <img
+						src="/icons/create.svg" alt="create" class="icon">
+					</a>
+				</div>
+
+				<div class="category" th:each="category: ${categories}">
+					<div class="main-info">
+						<div class="category-name" th:text="${category.getName()}">WalletName</div>
+					</div>
+					<div class="category-update">
+						<a
+							th:href="@{/transactioncategory/{id}/edit(id=${category.getId()})}">
+							<img alt="update" src="/icons/update.svg" class="icon">
+						</a>
+						<form th:method="DELETE"
+							th:action="@{/transactioncategory/{id}(id=${category.getId()})}"
+							class="category-remove">
+							<button type="submit">
+								<img src="/icons/delete.svg" alt="delete" class="icon">
+							</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
