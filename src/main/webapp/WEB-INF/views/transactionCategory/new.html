@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link href="/css/mainstyle.css" rel="stylesheet" type="text/css">
+<title>Новый кошелек</title>
+</head>
+<body>
+	<div class="wrapper jcc">
+		<div class="container jcc">
+			<div class="cancel-label">
+				<a href="javascript:history.back()" class="cancel-icon"><img
+					src="/icons/cancel.svg" alt="cancel" class="icon"></a>
+			</div>
+			<form method="post" action="/transactioncategory"
+				th:object="${transactionCategory}" class="create">
+				<input type="text" name="name" placeholder="Название" class="input"
+					required th:field="*{name}">
+				<button type="submit" class="button">Сохранить</button>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
