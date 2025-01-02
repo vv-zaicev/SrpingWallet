@@ -120,7 +120,12 @@
 }
 
 .option {
+	color: #fff;
 	text-align: center;
     font-size: 30px;
     margin: 10px 0;
+}
+
+.option:hover {
+	transform: scale(1.1);
 }
