@@ -17,6 +17,7 @@ public class TransactionCategoryDAO {
 	private final String SQL_SELECT_CATEGORY_BY_ID = "SELECT * FROM transaction_category WHERE category_id=?";
 	private final String SQL_UPDATE_CATEGORY = "UPDATE transaction_category SET category_name=? WHERE category_id=?";
 	private final String SQL_DELETE_CATEGORY = "DELETE FROM transaction_category WHERE category_id=?";
+	private final String SQL_DELETE_CATEGORY_FROM_TRANSACTIONS = "UPDATE transactions SET transaction_category=NULL WHERE transaction_category=?";
 
 	private final RowMapper<TransactionCategory> transactionCategoryMapper = (rs, rowNum) -> {
 		String name = rs.getString("category_name");
@@ -50,6 +51,7 @@ public class TransactionCategoryDAO {
 	}
 
 	public void deleteCategory(int id) {
+		jdbcTemplate.update(SQL_DELETE_CATEGORY_FROM_TRANSACTIONS, id);
 		jdbcTemplate.update(SQL_DELETE_CATEGORY, id);
 	}
 }
