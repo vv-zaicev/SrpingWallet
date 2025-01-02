@@ -36,7 +36,7 @@ public class TransactionCategoryDAO {
 	}
 
 	public TransactionCategory getCategoryById(int id) {
-		return jdbcTemplate.queryForObject(SQL_SELECT_CATEGORY_BY_ID, transactionCategoryMapper, id);
+		return jdbcTemplate.query(SQL_SELECT_CATEGORY_BY_ID, rs -> rs.next() ? transactionCategoryMapper.mapRow(rs, 1) : null, id);
 	}
 
 	public void createCategory(TransactionCategory newCategory) {
