@@ -5,6 +5,7 @@
 <title>Доступные кошельки</title>
 <link href="/css/mainstyle.css" rel="stylesheet" type="text/css">
 <link href="/css/wallets.css" rel="stylesheet" type="text/css">
+<script src="/js/Wallets.js"></script>
 </head>
 <body>
 	<div class="wrapper jcc">
@@ -13,6 +14,9 @@
 			<div class="wallets">
 				<div class="wallets-bar">
 					<div class="titles">Доступные кошельки</div>
+					<button onclick="visiblePopup(true)" class="wallets-setting">
+						<img src="/icons/settings.svg" alt="setting" class="icon">
+					</button>
 					<a href="/wallet/new" class="wallets-create"> <img
 						src="/icons/create.svg" alt="create" class="icon">
 					</a>
@@ -37,6 +41,17 @@
 					</div>
 				</div>
 			</div>
+		</div>
+	</div>
+	<div class="popup" id="popup">
+		<div class="popup-content jcc">
+			<div class="popup-bar">
+				<div class="popup-bar-name">Настройки</div>
+				<button class="popup-bar-cancel" onclick="visiblePopup(false)">
+					<img src="/icons/cancel.svg" alt="cancel" class="icon">
+				</button>
+			</div>
+			<div class="option">Option</div>
 		</div>
 	</div>
 </body>
