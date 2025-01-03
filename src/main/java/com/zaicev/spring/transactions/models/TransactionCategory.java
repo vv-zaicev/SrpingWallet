@@ -35,4 +35,12 @@ public class TransactionCategory implements Comparable<TransactionCategory> {
 		return this.id - transactionCategory.id;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof TransactionCategory)) {
+			return false;
+		}
+		return ((TransactionCategory) obj).getId() == this.getId();
+	}
+
 }
