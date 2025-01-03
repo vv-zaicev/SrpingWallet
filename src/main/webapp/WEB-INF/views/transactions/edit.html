@@ -10,7 +10,7 @@
 	<div class="wrapper jcc">
 		<div class="container jcc">
 			<div class="cancel-label">
-				<a href="javascript:history.back()" class="cancel-icon"><img
+				<a th:href="@{/wallet/{id}(id=${transaction.getWallet().getId()})}" class="cancel-icon"><img
 					src="/icons/cancel.svg" alt="cancel" class="icon"></a>
 			</div>
 			<form th:method="PATCH" th:action="@{/transaction}"
