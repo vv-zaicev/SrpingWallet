@@ -1,14 +1,14 @@
 package com.zaicev.spring.transactions.models;
 
-public class TransactionCategory {
-	
+public class TransactionCategory implements Comparable<TransactionCategory> {
+
 	private String name;
 	private int id;
-	
+
 	public TransactionCategory() {
-		
+
 	}
-	
+
 	public TransactionCategory(String name, int id) {
 		this.name = name;
 		this.id = id;
@@ -17,11 +17,11 @@ public class TransactionCategory {
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -29,8 +29,10 @@ public class TransactionCategory {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
-	
-	
+
+	@Override
+	public int compareTo(TransactionCategory transactionCategory) {
+		return this.id - transactionCategory.id;
+	}
 
 }
