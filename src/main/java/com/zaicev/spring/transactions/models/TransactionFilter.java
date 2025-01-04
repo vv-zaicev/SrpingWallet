@@ -26,6 +26,11 @@ public class TransactionFilter implements Predicate<Transaction> {
 		return transactionTypeTest && minSumTest && maxSumTest && minDateTest && maxDateTest && transactionCategoryTest;
 	}
 
+	public boolean isEmpty() {
+		return transactionCategory.isEmpty() && transactionType.isEmpty() && maxDate.isEmpty() && minDate.isEmpty()
+				&& maxSum.isEmpty() && minSum.isEmpty();
+	}
+
 	public Optional<TransactionType> getTransactionType() {
 		return transactionType;
 	}
