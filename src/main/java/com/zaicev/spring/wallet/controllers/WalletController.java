@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.zaicev.spring.transactions.dao.TransactionCategoryDAO;
 import com.zaicev.spring.transactions.dao.TransactionDAO;
-import com.zaicev.spring.transactions.models.TransactionCategory;
+import com.zaicev.spring.transactions.models.Transaction;
+import com.zaicev.spring.transactions.models.TransactionFilter;
 import com.zaicev.spring.wallet.dao.WalletDAO;
 import com.zaicev.spring.wallet.models.Wallet;
 
@@ -39,26 +40,28 @@ public class WalletController {
 	}
 
 	@GetMapping("/{id}")
-	public String show(@PathVariable("id") int id, Model model) {
+	public String show(@ModelAttribute("filter") TransactionFilter transactionFilter, @PathVariable("id") int id,
+			Model model) {
 		Wallet wallet = walletDAO.getWalletById(id);
+		List<Transaction> transactions = transactionDAO.getTransactionsByWalletId(id);
+
 		wallet.clearTranactions();
-		wallet.addTransactions(transactionDAO.getTransactionsByWalletId(id));
-		List<TransactionCategory> transactionCategories = transactionCategoryDAO.getAllCategories();
-		
+		wallet.addTransactions(transactions.stream().filter(transactionFilter).toList());
+
 		BigDecimal divider = wallet.getIncome().max(wallet.getExpenses());
 		BigDecimal incomePercent = new BigDecimal(100);
 		BigDecimal expensesPercent = new BigDecimal(100);
 		if (!divider.equals(BigDecimal.ZERO)) {
 			incomePercent = wallet.getIncome().divide(divider, 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
-			expensesPercent = wallet.getExpenses().divide(divider, 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
-		} 
-		
+			expensesPercent = wallet.getExpenses().divide(divider, 2, RoundingMode.HALF_UP)
+					.multiply(new BigDecimal(100));
+		}
+
 		model.addAttribute("wallet", wallet);
-		model.addAttribute("categories", transactionCategories);
+		model.addAttribute("categories", transactionCategoryDAO.getAllCategories());
 		model.addAttribute("incomePercent", incomePercent);
 		model.addAttribute("expensesPercent", expensesPercent);
-		
-		
+
 		return "wallet/show";
 	}
 
