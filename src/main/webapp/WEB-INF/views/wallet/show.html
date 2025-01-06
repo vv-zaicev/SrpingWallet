@@ -10,8 +10,6 @@
 <body>
 	<div class="wrapper">
 		<div class="container">
-			<form id="deleteFilter" method="post"
-				action="/wallet/filter?action=delete"></form>
 			<div class="row">
 				<div class="general-statistic">
 					<div class="col">
@@ -141,7 +139,7 @@
 								<button type="submit" class="button">Применить</button>
 							</div>
 							<div class="filters-col">
-								<button form="deleteFilter" type="submit" class="button">Сбросить</button>
+								<a th:href="@{/wallet/{id}(id=${wallet.getId()})}" class="button">Сбросить</a>
 							</div>
 						</div>
 					</form>
