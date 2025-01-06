@@ -35,16 +35,16 @@ function changeTransactionType(select) {
 	else
 		select.style.color = "#FFF";
 
-	var categoryList = document.getElementById("selectTransactionCategory");
-	var categories = categoryList.getElementsByTagName("option");
+	//var categoryList = document.getElementById("selectTransactionCategory");
+	//var categories = categoryList.getElementsByTagName("option");
 
-	var changedType = categoryList.options[categoryList.selectedIndex].id.toLowerCase() != type;
+	//var changedType = categoryList.options[categoryList.selectedIndex].id.toLowerCase() != type;
 
 	if (o.id == "nullType") {
 		document.getElementById("placeholderType").selected = true;
 	}
 
-	for (var category of categories) {
+/*	for (var category of categories) {
 		if (category.id == "placeholderCat") {
 			if (changedType)
 				category.selected = true;
@@ -57,7 +57,7 @@ function changeTransactionType(select) {
 		} else if (category.id != "nullCat" && category.id != "placeholderCat") {
 			category.style.display = "none";
 		}
-	}
+	}*/
 }
 
 function changeTransactionCat(select) {
@@ -71,8 +71,10 @@ function changeTransactionCat(select) {
 window.onload = function() {
 	loadTransactions(5);
 
-	var s = document.getElementById("selectTransactionType");
-	changeTransactionType(s);
+	var selectType = document.getElementById("selectTransactionType");
+	changeTransactionType(selectType);
+	var selectCat = document.getElementById("selectTransactionCategory");
+	changeTransactionCat(selectCat)
 
 	var coll = document.getElementById("collapsible");
 	console.log(coll);
