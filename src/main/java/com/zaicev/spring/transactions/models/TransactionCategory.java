@@ -1,8 +1,13 @@
 package com.zaicev.spring.transactions.models;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class TransactionCategory implements Comparable<TransactionCategory> {
 
 	private String name;
+	@Id
 	private int id;
 
 	public TransactionCategory() {
