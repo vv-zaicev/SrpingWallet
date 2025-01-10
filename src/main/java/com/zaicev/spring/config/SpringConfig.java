@@ -124,7 +124,7 @@ public class SpringConfig implements WebMvcConfigurer {
 
 	@Bean
 	public TransactionCategoryDAO transactionCategoryDAO() {
-		return new TransactionCategoryDAO(jdbcTemplate());
+		return new TransactionCategoryDAO(sessionFactory().getObject());
 	}
 
 	@Bean

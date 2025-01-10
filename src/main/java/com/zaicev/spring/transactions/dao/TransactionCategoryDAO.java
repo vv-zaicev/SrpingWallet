@@ -1,57 +1,69 @@
 package com.zaicev.spring.transactions.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 import com.zaicev.spring.transactions.models.TransactionCategory;
 
 public class TransactionCategoryDAO {
-	private final JdbcTemplate jdbcTemplate;
-	private final SimpleJdbcInsert insertIntoTransactionCategory;
+	private SessionFactory sessionFactory;
 
-	private final String SQL_SELECT_CATEGORIES = "SELECT * FROM transaction_category";
-	private final String SQL_SELECT_CATEGORY_BY_ID = "SELECT * FROM transaction_category WHERE category_id=?";
-	private final String SQL_UPDATE_CATEGORY = "UPDATE transaction_category SET category_name=? WHERE category_id=?";
-	private final String SQL_DELETE_CATEGORY = "DELETE FROM transaction_category WHERE category_id=?";
-	private final String SQL_DELETE_CATEGORY_FROM_TRANSACTIONS = "UPDATE transactions SET transaction_category=NULL WHERE transaction_category=?";
-
-	private final RowMapper<TransactionCategory> transactionCategoryMapper = (rs, rowNum) -> {
-		String name = rs.getString("category_name");
-		int id = rs.getInt("category_id");
-		return new TransactionCategory(name, id);
-	};
-
-	public TransactionCategoryDAO(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-		insertIntoTransactionCategory = new SimpleJdbcInsert(jdbcTemplate).withTableName("transaction_category")
-				.usingGeneratedKeyColumns("category_id");
+	public TransactionCategoryDAO(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 
 	public List<TransactionCategory> getAllCategories() {
-		return jdbcTemplate.query(SQL_SELECT_CATEGORIES, transactionCategoryMapper);
+		try (Session session = sessionFactory.openSession()) {
+			return session.createQuery("from TransactionCategory", TransactionCategory.class).list();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ArrayList<TransactionCategory>();
+		}
 	}
 
 	public TransactionCategory getCategoryById(int id) {
-		return jdbcTemplate.query(SQL_SELECT_CATEGORY_BY_ID, rs -> rs.next() ? transactionCategoryMapper.mapRow(rs, 1) : null, id);
+		try (Session session = sessionFactory.openSession()) {
+			return session.get(TransactionCategory.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public void createCategory(TransactionCategory newCategory) {
-		MapSqlParameterSource parameters = new MapSqlParameterSource();
-		parameters.addValue("category_name", newCategory.getName());
-		int id = insertIntoTransactionCategory.executeAndReturnKey(parameters).intValue();
-		newCategory.setId(id);
+		try (Session session = sessionFactory.openSession()) {
+			session.getTransaction().begin();
+			session.persist(newCategory);
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void updateCategory(TransactionCategory updatedCategory) {
-		jdbcTemplate.update(SQL_UPDATE_CATEGORY, updatedCategory.getName(), updatedCategory.getId());
+		try (Session session = sessionFactory.openSession()) {
+			session.getTransaction().begin();
+			session.merge(updatedCategory);
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void deleteCategory(int id) {
-		jdbcTemplate.update(SQL_DELETE_CATEGORY_FROM_TRANSACTIONS, id);
-		jdbcTemplate.update(SQL_DELETE_CATEGORY, id);
+		try (Session session = sessionFactory.openSession()) {
+			session.getTransaction().begin();
+			TransactionCategory transactionCategory = session.get(TransactionCategory.class, id);
+			if (transactionCategory != null) {
+				session.remove(transactionCategory);
+				;
+			}
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
