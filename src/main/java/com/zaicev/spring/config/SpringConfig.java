@@ -93,16 +93,16 @@ public class SpringConfig implements WebMvcConfigurer {
 
 		return dataSource;
 	}
-	
+
 	private Properties hibernateProperties() {
 		Properties properties = new Properties();
-        properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-        properties.put("hibernate.show_sql", "true");
-        properties.put("hibernate.format_sql", "true");
-        properties.put("hibernate.hbm2ddl.auto", "update");
-        return properties;
+		properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+		properties.put("hibernate.show_sql", "true");
+		properties.put("hibernate.format_sql", "true");
+		properties.put("hibernate.hbm2ddl.auto", "update");
+		return properties;
 	}
-	
+
 	@Bean
 	public LocalSessionFactoryBean sessionFactory() {
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
@@ -134,7 +134,7 @@ public class SpringConfig implements WebMvcConfigurer {
 
 	@Bean
 	public WalletDAO walletDAO() {
-		return new WalletDAO(jdbcTemplate(), namedParameterJdbcTemplate());
+		return new WalletDAO(sessionFactory().getObject());
 	}
 
 	@Bean
