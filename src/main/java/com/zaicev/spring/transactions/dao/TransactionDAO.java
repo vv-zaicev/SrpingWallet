@@ -1,101 +1,94 @@
 package com.zaicev.spring.transactions.dao;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 
 import com.zaicev.spring.transactions.models.Transaction;
-import com.zaicev.spring.transactions.models.TransactionType;
-import com.zaicev.spring.wallet.dao.WalletDAO;
+
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 
 @Component
 public class TransactionDAO {
 
-	private final JdbcTemplate jdbcTemplate;
-	private SimpleJdbcInsert insertIntoUser;
-	private WalletDAO walletDAO;
-	private TransactionCategoryDAO transactionCategoryDAO;
-
-	private final String SQL_SELECT_TRANSACTIONS = "SELECT * FROM transactions";
-	private final String SQL_SELECT_TRANSACTION_BY_ID = "SELECT * FROM transactions WHERE transaction_id=?";
-	private final String SQL_SELECT_TRANSACTIONS_BY_WALLET_ID = "SELECT * FROM transactions WHERE transaction_wallet=?";
-	private final String SQL_UPDATE_TRANSACTION = "UPDATE transactions SET transaction_description=?, transaction_type=?, transaction_date=?, transaction_sum=?, transaction_category=?, transaction_wallet=? WHERE transaction_id=?";
-	private final String SQL_DELETE_TRANSACTION = "DELETE FROM transactions WHERE transaction_id=?";
-	private final String SQL_DELETE_TRANSACTIONS_BY_WALLET_ID = "DELETE FROM transactions WHERE transaction_wallet=?";
-
-	private final RowMapper<Transaction> transactionMapper = (rs, rowNum) -> {
-		Transaction transaction = new Transaction();
-		Calendar calendar = new GregorianCalendar();
-		calendar.setTime(rs.getDate("transaction_date"));
-
-		transaction.setId(rs.getInt("transaction_id"));
-		transaction.setSum(rs.getBigDecimal("transaction_sum"));
-		transaction.setType(TransactionType.valueOf(rs.getString("transaction_type")));
-		transaction.setDate(calendar);
-		transaction.setDescription(rs.getString("transaction_description"));
-
-		transaction.setCategory(transactionCategoryDAO.getCategoryById(rs.getInt("transaction_category")));
-		transaction.setWallet(walletDAO.getWalletById(rs.getInt("transaction_wallet")));
-
-		return transaction;
-	};
+	private SessionFactory sessionFactory;
 
 	@Autowired
-	public TransactionDAO(JdbcTemplate jdbcTemplate, WalletDAO walletDAO,
-			TransactionCategoryDAO transactionCategoryDAO) {
-		this.jdbcTemplate = jdbcTemplate;
-		this.walletDAO = walletDAO;
-		this.transactionCategoryDAO = transactionCategoryDAO;
-		this.insertIntoUser = new SimpleJdbcInsert(jdbcTemplate).withTableName("transactions")
-				.usingGeneratedKeyColumns("transaction_id");
+	public TransactionDAO(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 
 	public List<Transaction> getAllTransactions() {
-		return jdbcTemplate.query(SQL_SELECT_TRANSACTIONS, transactionMapper);
+		try (Session session = sessionFactory.openSession()) {
+			return session.createQuery("from Transaction", Transaction.class).list();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ArrayList<Transaction>();
+		}
 	}
-	
+
 	public List<Transaction> getTransactionsByWalletId(int walletId) {
-		return jdbcTemplate.query(SQL_SELECT_TRANSACTIONS_BY_WALLET_ID, transactionMapper, walletId);
+		try (Session session = sessionFactory.openSession()) {
+			CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+			CriteriaQuery<Transaction> criteriaQuery = criteriaBuilder.createQuery(Transaction.class);
+
+			Root<Transaction> root = criteriaQuery.from(Transaction.class);
+			criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("id"), walletId));
+
+			return session.createQuery(criteriaQuery).getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ArrayList<Transaction>();
+		}
 	}
 
 	public Transaction getTransactionById(int id) {
-		return jdbcTemplate.queryForObject(SQL_SELECT_TRANSACTION_BY_ID, transactionMapper, id);
+		try (Session session = sessionFactory.openSession()) {
+			return session.get(Transaction.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
-	public int createTransaction(Transaction newTransaction) {
-		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("transaction_description", newTransaction.getDescription());
-		parameters.put("transaction_type", newTransaction.getType());
-		parameters.put("transaction_date", newTransaction.getDate());
-		parameters.put("transaction_sum", newTransaction.getSum());
-		parameters.put("transaction_category", newTransaction.getCategory().getId());
-		parameters.put("transaction_wallet", newTransaction.getWallet().getId());
-
-		return insertIntoUser.executeAndReturnKey(parameters).intValue();
+	public void createTransaction(Transaction newTransaction) {
+		try (Session session = sessionFactory.openSession()) {
+			session.getTransaction().begin();
+			session.persist(newTransaction);
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 
 	public void updateTransaction(Transaction updatedTrasnaction) {
-		jdbcTemplate.update(SQL_UPDATE_TRANSACTION, updatedTrasnaction.getDescription(),
-				updatedTrasnaction.getType().toString(), updatedTrasnaction.getDate(), updatedTrasnaction.getSum(),
-				updatedTrasnaction.getCategory().getId(), updatedTrasnaction.getWallet().getId(),
-				updatedTrasnaction.getId());
+		try (Session session = sessionFactory.openSession()) {
+			session.getTransaction().begin();
+			session.merge(updatedTrasnaction);
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void deleteTransaction(int id) {
-		jdbcTemplate.update(SQL_DELETE_TRANSACTION, id);
-	}
-
-	public void deleteTransactionsByWalletId(int id) {
-		jdbcTemplate.update(SQL_DELETE_TRANSACTIONS_BY_WALLET_ID, id);
+		try (Session session = sessionFactory.openSession()) {
+			session.getTransaction().begin();
+			Transaction deletedTransaction = session.get(Transaction.class, id);
+			if (deletedTransaction != null) {
+				session.remove(deletedTransaction);
+			}
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }
