@@ -39,7 +39,8 @@ public class WalletController {
 	public String show(@ModelAttribute("filter") TransactionFilter transactionFilter, @PathVariable("id") int id,
 			Model model) {
 		Wallet wallet = walletDAO.getWalletById(id);
-
+		wallet.setFilter(transactionFilter);
+		
 		BigDecimal divider = wallet.getIncome().max(wallet.getExpenses());
 		BigDecimal incomePercent = new BigDecimal(100);
 		BigDecimal expensesPercent = new BigDecimal(100);
