@@ -2,17 +2,35 @@ package com.zaicev.spring.wallet.models;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
 import com.zaicev.spring.transactions.models.Transaction;
 import com.zaicev.spring.transactions.models.TransactionType;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+@Entity
 public class Wallet {
+
+	@OneToMany(mappedBy = "wallet", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
 	private List<Transaction> transactions = new ArrayList<Transaction>();
+
+	@Column(name = "wallet_balance")
 	private BigDecimal balance;
+	
+	@Column(name = "wallet_name")
 	private String name;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	public Wallet() {
@@ -83,7 +101,8 @@ public class Wallet {
 	}
 
 	public void updateTransaction(Transaction updatedTransaction) {
-		Transaction oldTransaction = transactions.stream().filter(x -> x.getId() == updatedTransaction.getId()).findFirst().orElse(null);
+		Transaction oldTransaction = transactions.stream().filter(x -> x.getId() == updatedTransaction.getId())
+				.findFirst().orElse(null);
 		removeTransaction(oldTransaction);
 		addTransaction(updatedTransaction);
 	}

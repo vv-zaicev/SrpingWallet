@@ -6,18 +6,46 @@ import java.util.Calendar;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.zaicev.spring.wallet.models.Wallet;
+import com.zaicev.spring.wallet.models.Wallet;import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 
-public class Transaction implements Comparable<Transaction>{
-    private String description;
-    private BigDecimal sum;
-    private TransactionType type;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Calendar date;
-    private int id;
-    private Wallet wallet;
-    private TransactionCategory category;
-    
+@Entity
+public class Transaction implements Comparable<Transaction> {
+
+	@Column(name = "description")
+	private String description;
+
+	@Column(name = "transaction_sum")
+	private BigDecimal sum;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "transaction_type")
+	private TransactionType type;
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@Column(name = "transaction_date")
+	private Calendar date;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	private Wallet wallet;
+
+	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
+	private TransactionCategory category;
+
 	public Transaction() {
 	}
 
@@ -48,7 +76,7 @@ public class Transaction implements Comparable<Transaction>{
 	public Calendar getDate() {
 		return date;
 	}
-	
+
 	public String getStringDate() {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 		return dateFormat.format(date.getTime());
@@ -65,7 +93,6 @@ public class Transaction implements Comparable<Transaction>{
 	public void setId(int id) {
 		this.id = id;
 	}
-	
 
 	public Wallet getWallet() {
 		return wallet;
@@ -95,7 +122,5 @@ public class Transaction implements Comparable<Transaction>{
 		}
 		return ((Transaction) obj).getId() == this.getId();
 	}
-    
-	
-    
+
 }
