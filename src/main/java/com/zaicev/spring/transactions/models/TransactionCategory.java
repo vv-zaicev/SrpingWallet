@@ -1,10 +1,15 @@
 package com.zaicev.spring.transactions.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 
 @Entity
@@ -17,6 +22,9 @@ public class TransactionCategory implements Comparable<TransactionCategory> {
 	@Id
 	@GeneratedValue (strategy = GenerationType.IDENTITY)
 	private int id;
+	
+	@OneToMany(mappedBy = "category")
+	private List<Transaction> transactions = new ArrayList<Transaction>();
 
 	public TransactionCategory() {
 
@@ -41,6 +49,13 @@ public class TransactionCategory implements Comparable<TransactionCategory> {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	@PreRemove
+	private void preRemove() {
+		for (Transaction transaction : transactions) {
+			transaction.setCategory(null);
+		}
 	}
 
 	@Override
