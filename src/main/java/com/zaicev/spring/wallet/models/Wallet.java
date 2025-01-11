@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.zaicev.spring.transactions.models.Transaction;
+import com.zaicev.spring.transactions.models.TransactionFilter;
 import com.zaicev.spring.transactions.models.TransactionType;
 
 import jakarta.persistence.CascadeType;
@@ -16,6 +17,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Transient;
 
 @Entity
 public class Wallet {
@@ -28,6 +30,9 @@ public class Wallet {
 	
 	@Column(name = "wallet_name")
 	private String name;
+	
+	@Transient
+	private TransactionFilter filter = new TransactionFilter();
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -76,9 +81,18 @@ public class Wallet {
 	public void setId(int id) {
 		this.id = id;
 	}
+	
+
+	public TransactionFilter getFilter() {
+		return filter;
+	}
+
+	public void setFilter(TransactionFilter filter) {
+		this.filter = filter;
+	}
 
 	public List<Transaction> getTransactions() {
-		List<Transaction> copyTransactions = transactions.stream().sorted().toList();
+		List<Transaction> copyTransactions = transactions.stream().filter(filter).sorted().toList();
 		return copyTransactions;
 	}
 
