@@ -2,7 +2,6 @@ package com.zaicev.spring.wallet.controllers;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.zaicev.spring.transactions.dao.TransactionCategoryDAO;
-import com.zaicev.spring.transactions.dao.TransactionDAO;
-import com.zaicev.spring.transactions.models.Transaction;
 import com.zaicev.spring.transactions.models.TransactionFilter;
 import com.zaicev.spring.wallet.dao.WalletDAO;
 import com.zaicev.spring.wallet.models.Wallet;
@@ -28,8 +25,7 @@ public class WalletController {
 
 	@Autowired
 	private WalletDAO walletDAO;
-	@Autowired
-	private TransactionDAO transactionDAO;
+
 	@Autowired
 	private TransactionCategoryDAO transactionCategoryDAO;
 
@@ -43,10 +39,6 @@ public class WalletController {
 	public String show(@ModelAttribute("filter") TransactionFilter transactionFilter, @PathVariable("id") int id,
 			Model model) {
 		Wallet wallet = walletDAO.getWalletById(id);
-		List<Transaction> transactions = transactionDAO.getTransactionsByWalletId(id);
-
-		wallet.clearTranactions();
-		wallet.addTransactions(transactions.stream().filter(transactionFilter).toList());
 
 		BigDecimal divider = wallet.getIncome().max(wallet.getExpenses());
 		BigDecimal incomePercent = new BigDecimal(100);
@@ -91,7 +83,6 @@ public class WalletController {
 
 	@DeleteMapping("/{id}")
 	public String delete(@PathVariable("id") int id) {
-		transactionDAO.deleteTransactionsByWalletId(id);
 		walletDAO.deleteWallet(id);
 		return "redirect:/wallet";
 	}
