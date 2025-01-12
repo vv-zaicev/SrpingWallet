@@ -113,16 +113,6 @@ public class SpringConfig implements WebMvcConfigurer {
 	}
 
 	@Bean
-	public JdbcTemplate jdbcTemplate() {
-		return new JdbcTemplate(dataSource());
-	}
-
-	@Bean
-	public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
-		return new NamedParameterJdbcTemplate(dataSource());
-	}
-
-	@Bean
 	public TransactionCategoryDAO transactionCategoryDAO() {
 		return new TransactionCategoryDAO(sessionFactory().getObject());
 	}
