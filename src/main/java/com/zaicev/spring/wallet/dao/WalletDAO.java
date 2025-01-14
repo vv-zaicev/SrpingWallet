@@ -1,10 +1,10 @@
 package com.zaicev.spring.wallet.dao;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zaicev.spring.wallet.models.Wallet;
 
@@ -16,54 +16,32 @@ public class WalletDAO {
 		this.sessionFactory = sessionFactory;
 	}
 
+	@Transactional
 	public List<Wallet> getAllWallets() {
-		try (Session session = sessionFactory.openSession()) {
-			return session.createQuery("from Wallet", Wallet.class).list();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ArrayList<Wallet>();
-		}
+		return sessionFactory.getCurrentSession().createQuery("from Wallet", Wallet.class).list();
 	}
 
+	@Transactional
 	public Wallet getWalletById(int id) {
-		try (Session session = sessionFactory.openSession()) {
-			return session.get(Wallet.class, id);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
+		return sessionFactory.getCurrentSession().get(Wallet.class, id);
 	}
 
+	@Transactional
 	public void createWallet(Wallet newWallet) {
-		try (Session session = sessionFactory.openSession()) {
-			session.getTransaction().begin();
-			session.persist(newWallet);
-			session.getTransaction().commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		sessionFactory.getCurrentSession().persist(newWallet);
 	}
 
+	@Transactional
 	public void updateWallet(Wallet updatedWallet) {
-		try (Session session = sessionFactory.openSession()) {
-			session.getTransaction().begin();
-			session.merge(updatedWallet);
-			session.getTransaction().commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		sessionFactory.getCurrentSession().merge(updatedWallet);
 	}
 
+	@Transactional
 	public void deleteWallet(int id) {
-		try (Session session = sessionFactory.openSession()) {
-			session.getTransaction().begin();
-			Wallet deletedWallet = session.get(Wallet.class, id);
-			if (deletedWallet != null) {
-				session.remove(deletedWallet);
-			}
-			session.getTransaction().commit();
-		} catch (Exception e) {
-			e.printStackTrace();
+		Session session = sessionFactory.getCurrentSession();
+		Wallet deletedWallet = session.get(Wallet.class, id);
+		if (deletedWallet != null) {
+			session.remove(deletedWallet);
 		}
 	}
 }

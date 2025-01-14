@@ -1,10 +1,10 @@
 package com.zaicev.spring.transactions.dao;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zaicev.spring.transactions.models.TransactionCategory;
 
@@ -15,55 +15,34 @@ public class TransactionCategoryDAO {
 		this.sessionFactory = sessionFactory;
 	}
 
+	@Transactional
 	public List<TransactionCategory> getAllCategories() {
-		try (Session session = sessionFactory.openSession()) {
-			return session.createQuery("from TransactionCategory", TransactionCategory.class).list();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ArrayList<TransactionCategory>();
-		}
+		return sessionFactory.getCurrentSession().createQuery("from TransactionCategory", TransactionCategory.class).list();
+
 	}
 
+	@Transactional
 	public TransactionCategory getCategoryById(int id) {
-		try (Session session = sessionFactory.openSession()) {
-			return session.get(TransactionCategory.class, id);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
+		return sessionFactory.getCurrentSession().get(TransactionCategory.class, id);
 	}
 
+	@Transactional
 	public void createCategory(TransactionCategory newCategory) {
-		try (Session session = sessionFactory.openSession()) {
-			session.getTransaction().begin();
-			session.persist(newCategory);
-			session.getTransaction().commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		sessionFactory.getCurrentSession().persist(newCategory);
+
 	}
 
+	@Transactional
 	public void updateCategory(TransactionCategory updatedCategory) {
-		try (Session session = sessionFactory.openSession()) {
-			session.getTransaction().begin();
-			session.merge(updatedCategory);
-			session.getTransaction().commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		sessionFactory.getCurrentSession().merge(updatedCategory);
 	}
 
+	@Transactional
 	public void deleteCategory(int id) {
-		try (Session session = sessionFactory.openSession()) {
-			session.getTransaction().begin();
-			TransactionCategory transactionCategory = session.get(TransactionCategory.class, id);
-			if (transactionCategory != null) {
-				session.remove(transactionCategory);
-				;
-			}
-			session.getTransaction().commit();
-		} catch (Exception e) {
-			e.printStackTrace();
+		Session session = sessionFactory.getCurrentSession();
+		TransactionCategory transactionCategory = session.get(TransactionCategory.class, id);
+		if (transactionCategory != null) {
+			session.remove(transactionCategory);
 		}
 	}
 }
