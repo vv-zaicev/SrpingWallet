@@ -1,5 +1,6 @@
 package com.zaicev.spring.config;
 
+import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
@@ -10,7 +11,7 @@ public class MySpringMvcDispatcherServletInitializer extends AbstractAnnotationC
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
 		// TODO Auto-generated method stub
-		return null;
+		return new Class[] { SecurityConfig.class };
 	}
 
 	@Override
@@ -28,6 +29,10 @@ public class MySpringMvcDispatcherServletInitializer extends AbstractAnnotationC
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
 		super.onStartup(servletContext);
+
+		servletContext.addFilter("springSecurityFilterChain", new DelegatingFilterProxy())
+				.addMappingForUrlPatterns(null, false, "/*");
+
 		registerHiddenFieldFilter(servletContext);
 	}
 
