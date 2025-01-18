@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link href="/css/mainstyle.css" rel="stylesheet" type="text/css">
+<title>Авторизация</title>
+</head>
+<body>
+	<div class="wrapper jcc">
+		<div class="container jcc">
+			<form method="post" action="/login" class="create">
+				<input type="text" id="username" name="username" class="input"
+					placeholder="Пользователь" required> <input type="password"
+					id="password" name="password" class="input" placeholder="Пароль"
+					required>
+				<button type="submit" class="button">Войти</button>
+			</form>
+			<div th:if="${param.error}">
+				<p style="color: red">Неправильное имя пользователя или параоль</p>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
