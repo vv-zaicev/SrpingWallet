@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link href="/css/mainstyle.css" rel="stylesheet" type="text/css">
+<title>Регистрация</title>
+</head>
+<body>
+	<div class="wrapper jcc">
+		<div class="container jcc">
+			<div class="cancel-label">
+				<a href="/login" class="cancel-icon"><img
+					src="/icons/cancel.svg" alt="cancel" class="icon"></a>
+			</div>
+			<form method="post" action="/register" th:object="${user}"
+				class="create">
+				<input type="text" name="username" placeholder="Пользователь"
+					class="input" required th:field="*{username}"> 
+					<input
+					type="password" name="password" placeholder="Пароль"
+					class="input" required th:field="*{password}">
+				<button type="submit" class="button">Зарегистрировать</button>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
