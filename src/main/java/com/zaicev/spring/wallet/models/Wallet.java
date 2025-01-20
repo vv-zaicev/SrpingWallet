@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import com.zaicev.spring.security.models.User;
 import com.zaicev.spring.transactions.models.Transaction;
 import com.zaicev.spring.transactions.models.TransactionFilter;
 import com.zaicev.spring.transactions.models.TransactionType;
@@ -16,21 +17,27 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Transient;
 
 @Entity
 public class Wallet {
 
-	@OneToMany(mappedBy = "wallet", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
+
+	@OneToMany(mappedBy = "wallet", fetch = FetchType.EAGER, cascade = { CascadeType.REMOVE })
 	private List<Transaction> transactions = new ArrayList<Transaction>();
 
 	@Column(name = "wallet_balance")
 	private BigDecimal balance;
-	
+
 	@Column(name = "wallet_name")
 	private String name;
-	
+
 	@Transient
 	private TransactionFilter filter = new TransactionFilter();
 
@@ -81,7 +88,6 @@ public class Wallet {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
 
 	public TransactionFilter getFilter() {
 		return filter;
@@ -89,6 +95,14 @@ public class Wallet {
 
 	public void setFilter(TransactionFilter filter) {
 		this.filter = filter;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public List<Transaction> getTransactions() {
