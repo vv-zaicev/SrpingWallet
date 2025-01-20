@@ -143,4 +143,17 @@ public class Wallet {
 		}
 	}
 
+	@Override
+	public int hashCode() {
+		return Integer.hashCode(id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Wallet)) {
+			return false;
+		}
+		return id == ((Wallet) obj).getId();
+	}
+
 }
