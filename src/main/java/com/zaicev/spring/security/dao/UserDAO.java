@@ -35,10 +35,15 @@ public class UserDAO {
 
 		return Optional.of(session.createQuery(criteriaQuery).getSingleResultOrNull());
 	}
-	
-	@Transactional 
-	public void createUser(User user) {
-		sessionFactory.getCurrentSession().persist(user);
+
+	@Transactional
+	public void createUser(User newUser) {
+		sessionFactory.getCurrentSession().persist(newUser);
+	}
+
+	@Transactional
+	public void updateUser(User updatedUser) {
+		sessionFactory.getCurrentSession().merge(updatedUser);
 	}
 
 }
