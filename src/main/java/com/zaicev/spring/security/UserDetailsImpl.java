@@ -1,12 +1,14 @@
 package com.zaicev.spring.security;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.zaicev.spring.security.models.User;
+import com.zaicev.spring.wallet.models.Wallet;
 
 public class UserDetailsImpl implements UserDetails {
 
@@ -49,6 +51,22 @@ public class UserDetailsImpl implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return user.isEnabled();
+	}
+
+	public List<Wallet> getWallets() {
+		return user.getWallets();
+	}
+
+	public void addWallet(Wallet wallet) {
+		user.addWallet(wallet);
+	}
+
+	public void removeWallet(Wallet wallet) {
+		user.removeWallet(wallet);
+	}
+
+	public User getUser() {
+		return user;
 	}
 
 }
