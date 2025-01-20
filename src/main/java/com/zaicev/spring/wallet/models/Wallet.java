@@ -26,7 +26,7 @@ import jakarta.persistence.Transient;
 public class Wallet {
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "user_id", nullable = false)
+	@JoinColumn(nullable = false)
 	private User user;
 
 	@OneToMany(mappedBy = "wallet", fetch = FetchType.EAGER, cascade = { CascadeType.REMOVE })
