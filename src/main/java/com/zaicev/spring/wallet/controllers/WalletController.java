@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zaicev.spring.security.UserDetailsImpl;
+import com.zaicev.spring.security.dao.UserDAO;
 import com.zaicev.spring.transactions.dao.TransactionCategoryDAO;
 import com.zaicev.spring.transactions.models.TransactionFilter;
 import com.zaicev.spring.wallet.dao.WalletDAO;
@@ -27,11 +30,14 @@ public class WalletController {
 	private WalletDAO walletDAO;
 
 	@Autowired
+	private UserDAO userDAO;
+
+	@Autowired
 	private TransactionCategoryDAO transactionCategoryDAO;
 
 	@GetMapping()
-	public String index(Model model) {
-		model.addAttribute("wallets", walletDAO.getAllWallets());
+	public String index(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+		model.addAttribute("wallets", userDetails.getWallets());
 		return "wallet/index";
 	}
 
@@ -40,7 +46,7 @@ public class WalletController {
 			Model model) {
 		Wallet wallet = walletDAO.getWalletById(id);
 		wallet.setFilter(transactionFilter);
-		
+
 		BigDecimal divider = wallet.getIncome().max(wallet.getExpenses());
 		BigDecimal incomePercent = new BigDecimal(100);
 		BigDecimal expensesPercent = new BigDecimal(100);
@@ -71,8 +77,10 @@ public class WalletController {
 	}
 
 	@PostMapping()
-	public String create(@ModelAttribute("wallet") Wallet wallet) {
-		walletDAO.createWallet(wallet);
+	public String create(@ModelAttribute("wallet") Wallet wallet,
+			@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		userDetails.addWallet(wallet);
+		userDAO.updateUser(userDetails.getUser());
 		return "redirect:/wallet";
 	}
 
@@ -83,8 +91,10 @@ public class WalletController {
 	}
 
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable("id") int id) {
-		walletDAO.deleteWallet(id);
+	public String delete(@PathVariable("id") int id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+		Wallet wallet = walletDAO.getWalletById(id);
+		userDetails.removeWallet(wallet);
+		userDAO.updateUser(userDetails.getUser());
 		return "redirect:/wallet";
 	}
 }
