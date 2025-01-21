@@ -35,7 +35,7 @@ public class User {
 
 	private boolean enabled;
 
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	private List<Wallet> wallets = new ArrayList<Wallet>();
 
 	@ElementCollection(fetch = FetchType.EAGER)
