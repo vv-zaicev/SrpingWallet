@@ -29,7 +29,7 @@ public class Wallet {
 	@JoinColumn(nullable = false)
 	private User user;
 
-	@OneToMany(mappedBy = "wallet", fetch = FetchType.EAGER, cascade = { CascadeType.REMOVE })
+	@OneToMany(mappedBy = "wallet", fetch = FetchType.EAGER, cascade = { CascadeType.REMOVE }, orphanRemoval = true)
 	private List<Transaction> transactions = new ArrayList<Transaction>();
 
 	@Column(name = "wallet_balance")
@@ -120,11 +120,13 @@ public class Wallet {
 
 	public void addTransaction(Transaction transaction) {
 		transactions.add(transaction);
+		transaction.setWallet(this);
 		changeBalance(transaction, x -> x == TransactionType.INCOME);
 	}
 
 	public void removeTransaction(Transaction transaction) {
 		transactions.remove(transaction);
+		transaction.setWallet(null);
 		changeBalance(transaction, x -> x == TransactionType.EXPENSES);
 	}
 
