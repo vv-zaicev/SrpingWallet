@@ -29,7 +29,7 @@ public class Wallet {
 	@JoinColumn(nullable = false)
 	private User user;
 
-	@OneToMany(mappedBy = "wallet", fetch = FetchType.EAGER, cascade = { CascadeType.REMOVE }, orphanRemoval = true)
+	@OneToMany(mappedBy = "wallet", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
 	private List<Transaction> transactions = new ArrayList<Transaction>();
 
 	@Column(name = "wallet_balance")
