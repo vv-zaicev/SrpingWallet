@@ -6,7 +6,9 @@ import java.util.Calendar;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.zaicev.spring.wallet.models.Wallet;import jakarta.persistence.CascadeType;
+import com.zaicev.spring.wallet.models.Wallet;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -17,7 +19,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 
 @Entity
 public class Transaction implements Comparable<Transaction> {
@@ -41,9 +42,10 @@ public class Transaction implements Comparable<Transaction> {
 	private int id;
 
 	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(nullable = false)
 	private Wallet wallet;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
+	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.REMOVE })
 	private TransactionCategory category;
 
 	public Transaction() {
