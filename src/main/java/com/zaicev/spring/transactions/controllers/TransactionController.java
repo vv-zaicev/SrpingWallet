@@ -61,12 +61,9 @@ public class TransactionController {
 	public String create(@ModelAttribute("transaction") Transaction transaction,
 			@RequestParam("wallet_id") int walletId) {
 		Wallet wallet = walletDAO.getWalletById(walletId);
-
-		transaction.setWallet(wallet);
-
+		
 		wallet.addTransaction(transaction);
 		walletDAO.updateWallet(wallet);
-		transactionDAO.createTransaction(transaction);
 
 		return "redirect:/wallet/" + wallet.getId();
 	}
@@ -77,7 +74,6 @@ public class TransactionController {
 
 		wallet.updateTransaction(transaction);
 		walletDAO.updateWallet(wallet);
-		transactionDAO.updateTransaction(transaction);
 
 		return "redirect:/wallet/" + transaction.getWallet().getId();
 	}
@@ -89,7 +85,6 @@ public class TransactionController {
 
 		wallet.removeTransaction(transaction);
 		walletDAO.updateWallet(wallet);
-		transactionDAO.deleteTransaction(transaction.getId());
 
 		return "redirect:/wallet/" + wallet.getId();
 	}
