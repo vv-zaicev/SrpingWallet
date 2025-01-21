@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.zaicev.spring.security.UserDetailsImpl;
 import com.zaicev.spring.security.dao.UserDAO;
+import com.zaicev.spring.security.models.User;
 import com.zaicev.spring.transactions.dao.TransactionCategoryDAO;
 import com.zaicev.spring.transactions.models.TransactionFilter;
 import com.zaicev.spring.wallet.dao.WalletDAO;
@@ -37,7 +38,8 @@ public class WalletController {
 
 	@GetMapping()
 	public String index(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-		model.addAttribute("wallets", userDetails.getWallets());
+		User user = userDAO.getUserByName(userDetails.getUsername()).get();
+		model.addAttribute("wallets", user.getWallets());
 		return "wallet/index";
 	}
 
@@ -79,8 +81,9 @@ public class WalletController {
 	@PostMapping()
 	public String create(@ModelAttribute("wallet") Wallet wallet,
 			@AuthenticationPrincipal UserDetailsImpl userDetails) {
-		userDetails.addWallet(wallet);
-		userDAO.updateUser(userDetails.getUser());
+		User user = userDAO.getUserByName(userDetails.getUsername()).get();
+		user.addWallet(wallet);
+		userDAO.updateUser(user);
 		return "redirect:/wallet";
 	}
 
@@ -92,9 +95,9 @@ public class WalletController {
 
 	@DeleteMapping("/{id}")
 	public String delete(@PathVariable("id") int id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-		Wallet wallet = walletDAO.getWalletById(id);
-		userDetails.removeWallet(wallet);
-		userDAO.updateUser(userDetails.getUser());
+		User user = userDAO.getUserByName(userDetails.getUsername()).get();
+		user.removeWallet(walletDAO.getWalletById(id));
+		userDAO.updateUser(user);
 		return "redirect:/wallet";
 	}
 }
