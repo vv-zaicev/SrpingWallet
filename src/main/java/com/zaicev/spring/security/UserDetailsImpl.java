@@ -1,36 +1,43 @@
 package com.zaicev.spring.security;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.zaicev.spring.security.models.User;
-import com.zaicev.spring.wallet.models.Wallet;
-
 public class UserDetailsImpl implements UserDetails {
 
-	private User user;
+	private String username;
 
-	public UserDetailsImpl(User user) {
-		this.user = user;
+	private String password;
+
+	private Set<String> roles = new HashSet<String>();
+
+	private boolean enabled;
+
+	public UserDetailsImpl(String username, String password, Set<String> roles, boolean enabled) {
+		this.username = username;
+		this.password = password;
+		this.roles.addAll(roles);
+		this.enabled = enabled;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return user.getRoles().stream().map(SimpleGrantedAuthority::new).toList();
+		return roles.stream().map(SimpleGrantedAuthority::new).toList();
 	}
 
 	@Override
 	public String getPassword() {
-		return user.getPassword();
+		return password;
 	}
 
 	@Override
 	public String getUsername() {
-		return user.getUsername();
+		return username;
 	}
 
 	@Override
@@ -50,23 +57,7 @@ public class UserDetailsImpl implements UserDetails {
 
 	@Override
 	public boolean isEnabled() {
-		return user.isEnabled();
-	}
-
-	public List<Wallet> getWallets() {
-		return user.getWallets();
-	}
-
-	public void addWallet(Wallet wallet) {
-		user.addWallet(wallet);
-	}
-
-	public void removeWallet(Wallet wallet) {
-		user.removeWallet(wallet);
-	}
-
-	public User getUser() {
-		return user;
+		return enabled;
 	}
 
 }
