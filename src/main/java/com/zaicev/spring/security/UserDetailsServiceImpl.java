@@ -1,7 +1,5 @@
 package com.zaicev.spring.security;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,9 +17,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Optional<User> user = userDAO.getUserByName(username);
-		return user.map(UserDetailsImpl::new)
+		User user = userDAO.getUserByName(username)
 				.orElseThrow(() -> new UsernameNotFoundException(username + "is not found"));
+		return new UserDetailsImpl(user.getUsername(), user.getPassword(), user.getRoles(), user.isEnabled());
 	}
 
 }
