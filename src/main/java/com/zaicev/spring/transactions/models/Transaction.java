@@ -45,7 +45,7 @@ public class Transaction implements Comparable<Transaction> {
 	@JoinColumn(nullable = false)
 	private Wallet wallet;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.REMOVE })
+	@ManyToOne(fetch = FetchType.EAGER)
 	private TransactionCategory category;
 
 	public Transaction() {
