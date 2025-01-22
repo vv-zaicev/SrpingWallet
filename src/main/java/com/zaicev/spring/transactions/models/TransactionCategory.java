@@ -3,8 +3,12 @@ package com.zaicev.spring.transactions.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.zaicev.spring.models.VisibilityType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,18 +17,22 @@ import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name ="transaction_category")
+@Table(name = "transaction_category")
 public class TransactionCategory implements Comparable<TransactionCategory> {
 
 	@Column(name = "category_name")
 	private String name;
 
 	@Id
-	@GeneratedValue (strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	
+
 	@OneToMany(mappedBy = "category")
 	private List<Transaction> transactions = new ArrayList<Transaction>();
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "visibility")
+	private VisibilityType visibilityType;
 
 	public TransactionCategory() {
 
@@ -50,7 +58,15 @@ public class TransactionCategory implements Comparable<TransactionCategory> {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
+	public VisibilityType getVisibilityType() {
+		return visibilityType;
+	}
+
+	public void setVisibilityType(VisibilityType visibilityType) {
+		this.visibilityType = visibilityType;
+	}
+
 	@PreRemove
 	private void preRemove() {
 		for (Transaction transaction : transactions) {
