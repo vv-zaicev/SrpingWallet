@@ -1,11 +1,11 @@
 package com.zaicev.spring.security.models;
 
-import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.zaicev.spring.transactions.models.TransactionCategory;
 import com.zaicev.spring.wallet.models.Wallet;
 
 import jakarta.persistence.CascadeType;
@@ -37,6 +37,9 @@ public class User {
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	private List<Wallet> wallets = new ArrayList<Wallet>();
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	private Set<TransactionCategory> transactionCategories = new HashSet<TransactionCategory>();
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	private Set<String> roles = new HashSet<String>();
@@ -83,6 +86,10 @@ public class User {
 
 	public List<Wallet> getWallets() {
 		return wallets;
+	}
+
+	public Set<TransactionCategory> getTransactionCategories() {
+		return transactionCategories;
 	}
 
 	public void addWallet(Wallet wallet) {
