@@ -1,6 +1,7 @@
 package com.zaicev.spring.transactions.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +12,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zaicev.spring.security.UserDetailsImpl;
+import com.zaicev.spring.security.dao.UserDAO;
+import com.zaicev.spring.security.models.User;
 import com.zaicev.spring.transactions.dao.TransactionCategoryDAO;
 import com.zaicev.spring.transactions.models.TransactionCategory;
 
@@ -18,11 +22,21 @@ import com.zaicev.spring.transactions.models.TransactionCategory;
 @RequestMapping("/transactioncategory")
 public class TransactionCategoryController {
 	@Autowired
-	TransactionCategoryDAO transactionCategoryDAO;
+	private UserDAO userDAO;
+
+	@Autowired
+	private TransactionCategoryDAO transactionCategoryDAO;
+
+	@GetMapping("/admin")
+	public String adminIndex(Model model) {
+		model.addAttribute("categories", transactionCategoryDAO.getAllCategories());
+		return "transactionCategory/index";
+	}
 
 	@GetMapping()
-	public String index(Model model) {
-		model.addAttribute("categories", transactionCategoryDAO.getAllCategories());
+	public String userIndex(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+		User user = userDAO.getUserByName(userDetails.getUsername()).get();
+		model.addAttribute("categories", user.getTransactionCategories());
 		return "transactionCategory/index";
 	}
 
