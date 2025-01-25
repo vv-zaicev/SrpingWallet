@@ -35,6 +35,7 @@ public class SecurityConfig {
 			.csrf().disable()
 			.authorizeHttpRequests(auth -> auth
 					.requestMatchers("/register", "/login", "/css/**", "/icons/**").permitAll()
+					.requestMatchers("/transactioncategory/admin/**").hasRole("ADMIN")
 					.anyRequest().authenticated()
 			)
 			.formLogin(form -> form.loginPage("/login").permitAll().defaultSuccessUrl("/wallet"))
