@@ -40,6 +40,7 @@ public class WalletController {
 	public String index(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 		User user = userDAO.getUserByName(userDetails.getUsername()).get();
 		model.addAttribute("wallets", user.getWallets());
+		model.addAttribute("isAdmin", userDetails.getAuthorities().stream().anyMatch(group -> group.getAuthority().equals("ROLE_ADMIN")));
 		return "wallet/index";
 	}
 
