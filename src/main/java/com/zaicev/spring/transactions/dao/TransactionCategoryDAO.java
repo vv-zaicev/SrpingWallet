@@ -6,7 +6,13 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zaicev.spring.models.VisibilityType;
+import com.zaicev.spring.transactions.models.Transaction;
 import com.zaicev.spring.transactions.models.TransactionCategory;
+
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 
 public class TransactionCategoryDAO {
 	private SessionFactory sessionFactory;
@@ -17,8 +23,21 @@ public class TransactionCategoryDAO {
 
 	@Transactional
 	public List<TransactionCategory> getAllCategories() {
-		return sessionFactory.getCurrentSession().createQuery("from TransactionCategory", TransactionCategory.class).list();
+		return sessionFactory.getCurrentSession().createQuery("from TransactionCategory", TransactionCategory.class)
+				.list();
 
+	}
+
+	@Transactional
+	public List<TransactionCategory> getCategoriesByVisibleType(VisibilityType visibilityType) {
+		Session session = sessionFactory.getCurrentSession();
+		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+		CriteriaQuery<TransactionCategory> criteriaQuery = criteriaBuilder.createQuery(TransactionCategory.class);
+
+		Root<TransactionCategory> root = criteriaQuery.from(TransactionCategory.class);
+		criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("visibilityType"), visibilityType));
+
+		return session.createQuery(criteriaQuery).getResultList();
 	}
 
 	@Transactional
