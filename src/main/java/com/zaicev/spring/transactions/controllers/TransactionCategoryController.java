@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zaicev.spring.models.VisibilityType;
 import com.zaicev.spring.security.UserDetailsImpl;
 import com.zaicev.spring.security.dao.UserDAO;
 import com.zaicev.spring.security.models.User;
@@ -27,9 +28,10 @@ public class TransactionCategoryController {
 	@Autowired
 	private TransactionCategoryDAO transactionCategoryDAO;
 
-	@GetMapping("/admin")
+	@GetMapping("/all")
 	public String adminIndex(Model model) {
-		model.addAttribute("categories", transactionCategoryDAO.getAllCategories());
+		model.addAttribute("categories", transactionCategoryDAO.getCategoriesByVisibleType(VisibilityType.ALL));
+		model.addAttribute("all", true);
 		return "transactionCategory/index";
 	}
 
@@ -53,15 +55,39 @@ public class TransactionCategoryController {
 	}
 
 	@PostMapping()
-	public String create(@ModelAttribute("transactionCategory") TransactionCategory transactionCategory) {
+	public String create(@ModelAttribute("transactionCategory") TransactionCategory transactionCategory,
+			@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		User user = userDAO.getUserByName(userDetails.getUsername()).get();
+		transactionCategory.setUser(user);
+		transactionCategory.setVisibilityType(VisibilityType.PERSONAL);
+
 		transactionCategoryDAO.createCategory(transactionCategory);
 		return "redirect:/transactioncategory";
 	}
 
+	@PostMapping("/all")
+	public String createForAll(@ModelAttribute("transactionCategory") TransactionCategory transactionCategory) {
+		transactionCategory.setVisibilityType(VisibilityType.ALL);
+		transactionCategoryDAO.createCategory(transactionCategory);
+		return "redirect:/transactioncategory/all";
+	}
+
 	@PatchMapping()
-	public String update(@ModelAttribute("transactionCategory") TransactionCategory transactionCategory) {
+	public String update(@ModelAttribute("transactionCategory") TransactionCategory transactionCategory,
+			@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		User user = userDAO.getUserByName(userDetails.getUsername()).get();
+		transactionCategory.setUser(user);
+		transactionCategory.setVisibilityType(VisibilityType.PERSONAL);
+
 		transactionCategoryDAO.updateCategory(transactionCategory);
 		return "redirect:/transactioncategory";
+	}
+
+	@PatchMapping("/all")
+	public String updateForAll(@ModelAttribute("transactionCategory") TransactionCategory transactionCategory) {
+		transactionCategory.setVisibilityType(VisibilityType.ALL);
+		transactionCategoryDAO.updateCategory(transactionCategory);
+		return "redirect:/transactioncategory/all";
 	}
 
 	@DeleteMapping("/{id}")

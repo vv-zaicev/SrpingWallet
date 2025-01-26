@@ -16,7 +16,7 @@
 					<a href="/wallet" class="back-icon"><img src="/icons/back.svg"
 						alt="back" class="icon"></a>
 					<div class="categories-title">Категории:</div>
-					<a href="/transactioncategory/new" class="categories-create"> <img
+					<a th:href="@{/transactioncategory/new(all=${all == true})}" class="categories-create"> <img
 						src="/icons/create.svg" alt="create" class="icon">
 					</a>
 				</div>
@@ -27,7 +27,7 @@
 					</div>
 					<div class="category-update">
 						<a
-							th:href="@{/transactioncategory/{id}/edit(id=${category.getId()})}">
+							th:href="@{/transactioncategory/{id}/edit(all=${all == true}, id=${category.getId()})}">
 							<img alt="update" src="/icons/update.svg" class="icon">
 						</a>
 						<form th:method="DELETE"

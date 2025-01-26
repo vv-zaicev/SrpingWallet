@@ -12,7 +12,9 @@
 				<a href="/transactioncategory" class="cancel-icon"><img
 					src="/icons/cancel.svg" alt="cancel" class="icon"></a>
 			</div>
-			<form method="post" action="/transactioncategory"
+			<form method="post"
+				th:with="allParam=${param.all != null and param.all[0] == 'true'}"
+				th:action="@{${allParam ? '/transactioncategory/all' : '/transactioncategory'}}"
 				th:object="${transactionCategory}" class="create">
 				<input type="text" name="name" placeholder="Название" class="input"
 					required th:field="*{name}">
