@@ -51,7 +51,8 @@
 					<img src="/icons/cancel.svg" alt="cancel" class="icon">
 				</button>
 			</div>
-			<a class="option" href="/transactioncategory">Категории</a>
+			<a class="option" href="/transactioncategory">Персональные категории</a>
+			<a class="option" th:if="${isAdmin}" href="/transactioncategory/all">Общие категории</a>
 			<a class="option" href="/logout">Выйти</a>
 		</div>
 	</div>
