@@ -73,6 +73,14 @@ public class TransactionCategory implements Comparable<TransactionCategory> {
 		this.visibilityType = visibilityType;
 	}
 
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	@PreRemove
 	private void preRemove() {
 		for (Transaction transaction : transactions) {

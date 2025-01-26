@@ -102,4 +102,14 @@ public class User {
 		wallet.setUser(null);
 	}
 
+	public void addTransactionCategory(TransactionCategory transactionCategory) {
+		transactionCategories.add(transactionCategory);
+		transactionCategory.setUser(this);
+	}
+
+	public void removeTransactionCategory(TransactionCategory transactionCategory) {
+		transactionCategories.remove(transactionCategory);
+		transactionCategory.setUser(null);
+	}
+
 }
