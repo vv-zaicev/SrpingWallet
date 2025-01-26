@@ -6,6 +6,7 @@ import java.util.List;
 import com.zaicev.spring.models.VisibilityType;
 import com.zaicev.spring.security.models.User;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -86,6 +87,8 @@ public class TransactionCategory implements Comparable<TransactionCategory> {
 		for (Transaction transaction : transactions) {
 			transaction.setCategory(null);
 		}
+		transactions.clear();
+		user.removeTransactionCategory(this);
 	}
 
 	@Override
