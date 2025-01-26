@@ -2,7 +2,7 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Категории</title>
+<title th:text="${all == true} ? 'Общие категории' : 'Категории пользователя'">Категории</title>
 <link href="/css/mainstyle.css" rel="stylesheet" type="text/css">
 <link href="/css/categories.css" rel="stylesheet" type="text/css">
 <script src="/js/Wallets.js"></script>
@@ -15,7 +15,7 @@
 				<div class="categories-bar">
 					<a href="/wallet" class="back-icon"><img src="/icons/back.svg"
 						alt="back" class="icon"></a>
-					<div class="categories-title">Категории:</div>
+					<div class="categories-title" th:text="${all == true} ? 'Общие категории:' : 'Категории пользователя:'">Категории:</div>
 					<a th:href="@{/transactioncategory/new(all=${all == true})}" class="categories-create"> <img
 						src="/icons/create.svg" alt="create" class="icon">
 					</a>
