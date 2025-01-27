@@ -2,6 +2,7 @@ package com.zaicev.spring.wallet.controllers;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,10 +16,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zaicev.spring.models.VisibilityType;
 import com.zaicev.spring.security.UserDetailsImpl;
 import com.zaicev.spring.security.dao.UserDAO;
 import com.zaicev.spring.security.models.User;
 import com.zaicev.spring.transactions.dao.TransactionCategoryDAO;
+import com.zaicev.spring.transactions.models.TransactionCategory;
 import com.zaicev.spring.transactions.models.TransactionFilter;
 import com.zaicev.spring.wallet.dao.WalletDAO;
 import com.zaicev.spring.wallet.models.Wallet;
@@ -40,14 +43,20 @@ public class WalletController {
 	public String index(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 		User user = userDAO.getUserByName(userDetails.getUsername()).get();
 		model.addAttribute("wallets", user.getWallets());
-		model.addAttribute("isAdmin", userDetails.getAuthorities().stream().anyMatch(group -> group.getAuthority().equals("ROLE_ADMIN")));
+		model.addAttribute("isAdmin",
+				userDetails.getAuthorities().stream().anyMatch(group -> group.getAuthority().equals("ROLE_ADMIN")));
 		return "wallet/index";
 	}
 
 	@GetMapping("/{id}")
 	public String show(@ModelAttribute("filter") TransactionFilter transactionFilter, @PathVariable("id") int id,
-			Model model) {
+			@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
+
 		Wallet wallet = walletDAO.getWalletById(id);
+		User user = userDAO.getUserByName(userDetails.getUsername()).get();
+		List<TransactionCategory> transactionCategories = transactionCategoryDAO.getCategoriesByVisibleType(VisibilityType.ALL);
+		transactionCategories.addAll(user.getTransactionCategories());
+
 		wallet.setFilter(transactionFilter);
 
 		BigDecimal divider = wallet.getIncome().max(wallet.getExpenses());
@@ -60,7 +69,7 @@ public class WalletController {
 		}
 
 		model.addAttribute("wallet", wallet);
-		model.addAttribute("categories", transactionCategoryDAO.getAllCategories());
+		model.addAttribute("categories", transactionCategories);
 		model.addAttribute("incomePercent", incomePercent);
 		model.addAttribute("expensesPercent", expensesPercent);
 
