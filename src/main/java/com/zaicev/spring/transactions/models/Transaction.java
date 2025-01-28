@@ -51,6 +51,14 @@ public class Transaction implements Comparable<Transaction> {
 	public Transaction() {
 	}
 
+	public Transaction(BigDecimal sum, TransactionType type, Calendar date, int id, TransactionCategory category) {
+		this.sum = sum;
+		this.type = type;
+		this.date = date;
+		this.id = id;
+		this.category = category;
+	}
+
 	public String getDescription() {
 		return description;
 	}
