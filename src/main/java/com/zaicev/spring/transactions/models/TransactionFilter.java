@@ -1,6 +1,7 @@
 package com.zaicev.spring.transactions.models;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.function.Predicate;
 
@@ -11,9 +12,9 @@ public class TransactionFilter implements Predicate<Transaction> {
 	private BigDecimal minSum;
 	private BigDecimal maxSum;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Calendar minDate;
+	private LocalDate minDate;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Calendar maxDate;
+	private LocalDate maxDate;
 	private TransactionCategory transactionCategory;
 
 	@Override
@@ -58,19 +59,19 @@ public class TransactionFilter implements Predicate<Transaction> {
 		this.maxSum = maxSum;
 	}
 
-	public Calendar getMinDate() {
+	public LocalDate getMinDate() {
 		return minDate;
 	}
 
-	public void setMinDate(Calendar minDate) {
+	public void setMinDate(LocalDate minDate) {
 		this.minDate = minDate;
 	}
 
-	public Calendar getMaxDate() {
+	public LocalDate getMaxDate() {
 		return maxDate;
 	}
 
-	public void setMaxDate(Calendar maxDate) {
+	public void setMaxDate(LocalDate maxDate) {
 		this.maxDate = maxDate;
 	}
 

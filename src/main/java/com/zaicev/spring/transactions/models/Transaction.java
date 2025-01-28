@@ -2,6 +2,8 @@ package com.zaicev.spring.transactions.models;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -35,7 +37,7 @@ public class Transaction implements Comparable<Transaction> {
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "transaction_date")
-	private Calendar date;
+	private LocalDate date;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,7 +53,7 @@ public class Transaction implements Comparable<Transaction> {
 	public Transaction() {
 	}
 
-	public Transaction(BigDecimal sum, TransactionType type, Calendar date, int id, TransactionCategory category) {
+	public Transaction(BigDecimal sum, TransactionType type, LocalDate date, int id, TransactionCategory category) {
 		this.sum = sum;
 		this.type = type;
 		this.date = date;
@@ -83,16 +85,16 @@ public class Transaction implements Comparable<Transaction> {
 		this.type = type;
 	}
 
-	public Calendar getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
 
 	public String getStringDate() {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-		return dateFormat.format(date.getTime());
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+		return date.format(formatter);
 	}
 
-	public void setDate(Calendar date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
 
