@@ -132,13 +132,6 @@ public class Wallet {
 		changeBalance(transaction, x -> x == TransactionType.EXPENSES);
 	}
 
-	public void updateTransaction(Transaction updatedTransaction) {
-		Transaction oldTransaction = transactions.stream().filter(x -> x.getId() == updatedTransaction.getId())
-				.findFirst().orElse(null);
-		removeTransaction(oldTransaction);
-		addTransaction(updatedTransaction);
-	}
-
 	private void changeBalance(Transaction transaction, Predicate<TransactionType> predicate) {
 		if (predicate.test(transaction.getType())) {
 			balance = balance.add(transaction.getSum());
