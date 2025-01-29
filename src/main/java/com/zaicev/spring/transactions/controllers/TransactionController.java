@@ -1,5 +1,6 @@
 package com.zaicev.spring.transactions.controllers;
 
+import java.io.Console;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,12 +88,16 @@ public class TransactionController {
 	}
 
 	@PatchMapping()
-	public String update(@ModelAttribute("transaction") Transaction transaction) {
-		Wallet wallet = transaction.getWallet();
-
-		wallet.updateTransaction(transaction);
-		walletDAO.updateWallet(wallet);
-
+	public String update(@ModelAttribute("transaction") Transaction updatedTransaction) {
+		Transaction transaction = transactionDAO.getTransactionById(updatedTransaction.getId());
+		transaction.setCategory(updatedTransaction.getCategory());
+		transaction.setDate(updatedTransaction.getDate());
+		transaction.setDescription(updatedTransaction.getDescription());
+		transaction.setSum(updatedTransaction.getSum());
+		transaction.setType(updatedTransaction.getType());
+		
+		
+		walletDAO.updateWallet(transaction.getWallet());
 		return "redirect:/wallet/" + transaction.getWallet().getId();
 	}
 
