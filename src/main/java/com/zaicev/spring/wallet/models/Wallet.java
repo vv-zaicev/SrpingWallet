@@ -111,7 +111,9 @@ public class Wallet {
 	}
 
 	public void addTransactions(List<Transaction> transactions) {
-		this.transactions.addAll(transactions);
+		for (Transaction transaction : transactions) {
+			addTransaction(transaction);
+		}
 	}
 
 	public void clearTranactions() {
