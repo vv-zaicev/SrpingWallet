@@ -74,6 +74,15 @@ public class Transaction implements Comparable<Transaction> {
 	}
 
 	public void setSum(BigDecimal sum) {
+		if (wallet != null && !this.sum.equals(sum)) {
+			BigDecimal updatedBalance = wallet.getBalance();
+			if (type == TransactionType.INCOME) {
+				updatedBalance = updatedBalance.subtract(this.sum).add(sum);
+			} else {
+				updatedBalance = updatedBalance.add(this.sum).subtract(sum);
+			}
+			wallet.setBalance(updatedBalance);
+		}
 		this.sum = sum;
 	}
 
@@ -82,6 +91,20 @@ public class Transaction implements Comparable<Transaction> {
 	}
 
 	public void setType(TransactionType type) {
+		if (wallet != null && this.type != type) {
+			BigDecimal updatedBalance = wallet.getBalance();
+			if (this.type == TransactionType.INCOME) {
+				updatedBalance = updatedBalance.subtract(this.sum);
+			} else {
+				updatedBalance = updatedBalance.add(this.sum);
+			}
+			if (type == TransactionType.INCOME) {
+				updatedBalance = updatedBalance.add(this.sum);
+			} else {
+				updatedBalance = updatedBalance.subtract(this.sum);
+			}
+			wallet.setBalance(updatedBalance);
+		}
 		this.type = type;
 	}
 
