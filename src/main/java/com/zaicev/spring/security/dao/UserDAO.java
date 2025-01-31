@@ -33,7 +33,7 @@ public class UserDAO {
 		Root<User> root = criteriaQuery.from(User.class);
 		criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("username"), username));
 
-		return Optional.of(session.createQuery(criteriaQuery).getSingleResultOrNull());
+		return Optional.ofNullable(session.createQuery(criteriaQuery).getSingleResultOrNull());
 	}
 
 	@Transactional
