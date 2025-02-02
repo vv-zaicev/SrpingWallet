@@ -88,7 +88,10 @@ public class TransactionCategory implements Comparable<TransactionCategory> {
 			transaction.setCategory(null);
 		}
 		transactions.clear();
-		user.removeTransactionCategory(this);
+		if (user != null) {
+			user.removeTransactionCategory(this);
+		}
+		
 	}
 
 	@Override
