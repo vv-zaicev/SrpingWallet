@@ -30,18 +30,6 @@ public class TransactionDAO {
 	}
 
 	@Transactional
-	public List<Transaction> getTransactionsByWalletId(int walletId) {
-		Session session = sessionFactory.getCurrentSession();
-		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-		CriteriaQuery<Transaction> criteriaQuery = criteriaBuilder.createQuery(Transaction.class);
-
-		Root<Transaction> root = criteriaQuery.from(Transaction.class);
-		criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("id"), walletId));
-
-		return session.createQuery(criteriaQuery).getResultList();
-	}
-
-	@Transactional
 	public Transaction getTransactionById(int id) {
 		return sessionFactory.getCurrentSession().get(Transaction.class, id);
 	}
