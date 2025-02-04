@@ -33,7 +33,7 @@ public class Wallet {
 	private List<Transaction> transactions = new ArrayList<Transaction>();
 
 	@Column(name = "wallet_balance")
-	private BigDecimal balance;
+	private BigDecimal balance = new BigDecimal(0);
 
 	@Column(name = "wallet_name")
 	private String name;

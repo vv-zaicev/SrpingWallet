@@ -29,7 +29,7 @@ public class Transaction implements Comparable<Transaction> {
 	private String description;
 
 	@Column(name = "transaction_sum")
-	private BigDecimal sum;
+	private BigDecimal sum = new BigDecimal(0);
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "transaction_type")
